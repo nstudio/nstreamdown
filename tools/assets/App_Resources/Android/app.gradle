@@ -1,0 +1,18 @@
+// Add additional native dependencies here, for example:
+
+// dependencies {
+//   implementation 'com.google.android.gms:play-services-location:+'
+// }
+
+android {
+  compileSdkVersion 35
+  buildToolsVersion "35"
+  defaultConfig {
+    minSdkVersion 24
+    targetSdkVersion 34
+    generatedDensities = []
+  }
+  aaptOptions {
+    additionalParameters "--no-version-vectors"
+  }
+}

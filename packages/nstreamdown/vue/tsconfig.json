@@ -1,0 +1,14 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "../../../dist/out-tsc",
+    "rootDir": "..",
+    "baseUrl": ".",
+    "paths": {
+      "@nstudio/nstreamdown": ["../index.ios.ts"],
+      "nativescript-vue": ["../../../node_modules/nativescript-vue"]
+    }
+  },
+  "include": ["**/*.ts", "**/*.vue", "../references.d.ts"],
+  "exclude": ["node_modules"]
+}

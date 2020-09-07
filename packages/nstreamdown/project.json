@@ -1,0 +1,91 @@
+{
+  "name": "nstreamdown",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "packages/nstreamdown",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "options": {
+        "outputPath": "dist/packages/nstreamdown",
+        "tsConfig": "packages/nstreamdown/tsconfig.json",
+        "packageJson": "packages/nstreamdown/package.json",
+        "main": "packages/nstreamdown/index.d.ts",
+        "assets": [
+          "packages/nstreamdown/*.md",
+          "packages/nstreamdown/index.d.ts",
+          "LICENSE",
+          {
+            "glob": "**/*",
+            "input": "packages/nstreamdown/platforms/",
+            "output": "./platforms/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/nstreamdown/react/",
+            "output": "./react/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/nstreamdown/solid/",
+            "output": "./solid/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/nstreamdown/svelte/",
+            "output": "./svelte/"
+          },
+          {
+            "glob": "**/*",
+            "input": "packages/nstreamdown/vue/",
+            "output": "./vue/"
+          }
+        ],
+        "dependsOn": [
+          {
+            "target": "build.all",
+            "projects": "dependencies"
+          }
+        ]
+      }
+    },
+    "build.all": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["node tools/scripts/build-finish.ts nstreamdown"],
+        "parallel": false
+      },
+      "outputs": ["{workspaceRoot}/dist/packages/nstreamdown"],
+      "dependsOn": [
+        {
+          "target": "build.all",
+          "projects": "dependencies"
+        },
+        {
+          "target": "build",
+          "projects": "self"
+        }
+      ]
+    },
+    "focus": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["nx g @nativescript/plugin-tools:focus-packages nstreamdown"],
+        "parallel": false
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:eslint",
+      "options": {
+        "lintFilePatterns": ["packages/nstreamdown/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/vitest:test",
+      "options": {
+        "configFile": "packages/nstreamdown/vite.config.ts"
+      }
+    }
+  },
+  "tags": []
+}

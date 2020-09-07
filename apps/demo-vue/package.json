@@ -1,0 +1,18 @@
+{
+  "name": "demo-vue",
+  "main": "src/app.ts",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@nativescript/core": "file:../../node_modules/@nativescript/core",
+    "@nstudio/nstreamdown": "file:../../packages/nstreamdown"
+  },
+  "devDependencies": {
+    "@nativescript/android": "~9.0.0",
+    "@nativescript/ios": "~9.0.0",
+    "@nativescript/tailwind": "^2.1.0",
+    "nativescript-vue": "^3.0.0",
+    "vue": "^3.5.0",
+    "typescript": "~5.6.3"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "demo-angular",
+  "main": "./src/main.ts",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@nativescript/core": "file:../../node_modules/@nativescript/core",
+    "@nstudio/nstreamdown": "file:../../packages/nstreamdown"
+  },
+  "devDependencies": {
+    "@nativescript/android": "9.0.2",
+    "@nativescript/ios": "~9.0.0",
+    "@nativescript/tailwind": "^2.1.0"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDirs": [".", "../.."],
+    "baseUrl": ".",
+    "paths": {
+      "@nstudio/nstreamdown": ["../../packages/nstreamdown/index.ios.ts"],
+      "@nstudio/nstreamdown/vue": ["../../packages/nstreamdown/vue/index.ts"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.vue", "types/**/*.d.ts", "../../packages/nstreamdown/vue/**/*.ts", "../../packages/nstreamdown/vue/**/*.vue"],
+  "files": ["./references.d.ts", "../../packages/nstreamdown/references.d.ts"],
+  "exclude": ["node_modules", "platforms"]
+}

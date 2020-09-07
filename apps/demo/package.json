@@ -1,0 +1,14 @@
+{
+  "main": "./src/app.ts",
+  "description": "NativeScript Application",
+  "license": "SEE LICENSE IN <your-license-filename>",
+  "repository": "<fill-your-repository-here>",
+  "dependencies": {
+    "@nativescript/core": "*",
+    "@nstudio/nstreamdown": "file:../../packages/nstreamdown"
+  },
+  "devDependencies": {
+    "@nativescript/android": "~9.0.0",
+    "@nativescript/ios": "~9.0.0"
+  }
+}

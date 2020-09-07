@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "../../dist/out-tsc",
+    "rootDir": ".",
+    "jsx": "react-jsx",
+    "jsxImportSource": "react"
+  },
+  "exclude": ["**/*.spec.ts", "**/*.test.ts", "vite.config.ts", "angular", "vue", "react", "solid", "svelte"],
+  "include": ["**/*.ts", "**/*.tsx", "references.d.ts"]
+}

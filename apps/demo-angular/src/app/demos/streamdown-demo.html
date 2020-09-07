@@ -1,0 +1,67 @@
+<GridLayout rows="auto, *" class="bg-slate-50 dark:bg-slate-900">
+  <!-- Native ActionBar with navigation -->
+  <ActionBar flat="true" class="bg-slate-50 dark:bg-slate-900 text-black dark:text-white" title="Streaming Demo">
+    <NavigationButton text="" android.systemIcon="ic_menu_back" (tap)="goBack()"></NavigationButton>
+    <ActionItem ios.position="right" (tap)="toggleStreaming()">
+      @if (isIOS) { @if (isStreaming()) {
+      <image src="sys://stop.fill" class="w-5 h-5"></image>
+      } @else {
+      <image src="sys://play.fill" class="w-5 h-5"></image>
+      } } @else {
+      <label [text]="isStreaming() ? 'Stop' : 'Start'" class="text-blue-600 dark:text-blue-400 font-medium px-2 mr-2"></label>
+      }
+    </ActionItem>
+  </ActionBar>
+
+  <!-- Main content area with scroll -->
+  <GridLayout row="1" rows="auto, *, auto">
+    <!-- Mode selector -->
+    <GridLayout row="0" columns="*, *" class="mx-4 mt-3 bg-slate-200 dark:bg-slate-800 rounded-lg p-1">
+      <label
+        col="0"
+        text="Streaming"
+        [class]="
+          'text-center py-2 rounded-md text-sm font-medium ' +
+          (streamingMode() === 'streaming'
+            ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm'
+            : 'text-slate-500 dark:text-slate-400')
+        "
+        (tap)="setMode('streaming')"
+      ></label>
+      <label
+        col="1"
+        text="Static"
+        [class]="
+          'text-center py-2 rounded-md text-sm font-medium ' +
+          (streamingMode() === 'static'
+            ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm'
+            : 'text-slate-500 dark:text-slate-400')
+        "
+        (tap)="setMode('static')"
+      ></label>
+    </GridLayout>
+
+    <!-- Streamdown content -->
+    <ScrollView row="1" #scrollView class="my-3">
+      <StackLayout class="mx-4 bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm">
+        <Streamdown [content]="currentContent()" [config]="config()"></Streamdown>
+      </StackLayout>
+    </ScrollView>
+
+    <!-- Stats bar - fixed at bottom of content area -->
+    <GridLayout row="2" columns="*, *, *" class="mx-4 mb-2 bg-slate-100 dark:bg-slate-800 rounded-lg px-3 py-2">
+      <GridLayout col="0" rows="auto, auto" class="text-center">
+        <label row="0" [text]="charCount()" class="text-sm font-semibold text-slate-700 dark:text-slate-200"></label>
+        <label row="1" text="chars" class="text-[10] text-slate-400 dark:text-slate-500"></label>
+      </GridLayout>
+      <GridLayout col="1" rows="auto, auto" class="text-center">
+        <label row="0" [text]="tokenCount()" class="text-sm font-semibold text-slate-700 dark:text-slate-200"></label>
+        <label row="1" text="tokens" class="text-[10] text-slate-400 dark:text-slate-500"></label>
+      </GridLayout>
+      <GridLayout col="2" rows="auto, auto" class="text-center">
+        <label row="0" [text]="streamSpeed()" class="text-sm font-semibold text-slate-700 dark:text-slate-200"></label>
+        <label row="1" text="chars/s" class="text-[10] text-slate-400 dark:text-slate-500"></label>
+      </GridLayout>
+    </GridLayout>
+  </GridLayout>
+</GridLayout>

@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": true,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "noEmitHelpers": true,
+    "target": "ES2020",
+    "module": "ESNext",
+    "lib": ["ESNext", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "jsx": "react",
+    "baseUrl": ".",
+    "plugins": [
+      {
+        "transform": "@nativescript/webpack/dist/transformers/NativeClass",
+        "type": "raw"
+      }
+    ],
+    "paths": {
+      "@demo/shared": ["tools/demo/index.ts"],
+      "@nstudio/*": ["packages/*"],
+      "@nstudio/nstreamdown": ["packages/nstreamdown/index.d.ts"],
+      "@nstudio/nstreamdown/angular": ["packages/nstreamdown/angular/index.ts"],
+      "@nstudio/nstreamdown/vue": ["packages/nstreamdown/vue/index.ts"],
+      "@nstudio/nstreamdown/react": ["packages/nstreamdown/react/index.ts"],
+      "@nstudio/nstreamdown/solid": ["packages/nstreamdown/solid/index.ts"],
+      "@nstudio/nstreamdown/svelte": ["packages/nstreamdown/svelte/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}

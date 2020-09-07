@@ -1,0 +1,52 @@
+{
+  "name": "demo-solid",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/demo-solid/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nativescript/nx:build",
+      "options": {
+        "noHmr": true,
+        "production": true,
+        "uglify": true,
+        "release": true,
+        "forDevice": true
+      },
+      "dependsOn": [
+        {
+          "target": "build.all",
+          "dependencies": true
+        }
+      ]
+    },
+    "debug": {
+      "executor": "@nativescript/nx:debug",
+      "options": {
+        "noHmr": true,
+        "uglify": false,
+        "release": false,
+        "forDevice": false,
+        "prepare": false
+      }
+    },
+    "clean": {
+      "executor": "@nativescript/nx:clean",
+      "options": {}
+    },
+    "ios": {
+      "executor": "@nativescript/nx:build",
+      "options": {
+        "platform": "ios",
+        "noHmr": true
+      }
+    },
+    "android": {
+      "executor": "@nativescript/nx:build",
+      "options": {
+        "platform": "android",
+        "noHmr": true
+      }
+    }
+  }
+}

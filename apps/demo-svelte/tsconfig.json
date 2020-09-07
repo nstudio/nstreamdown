@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDirs": [".", "../.."],
+    "baseUrl": ".",
+    "paths": {
+      "@nstudio/nstreamdown": ["../../packages/nstreamdown/index.ios.ts"],
+      "@nstudio/nstreamdown/svelte": ["../../packages/nstreamdown/svelte/index.ts"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.svelte"],
+  "files": ["./types/references.d.ts", "./types/shims.svelte.d.ts"],
+  "exclude": ["node_modules", "platforms"]
+}

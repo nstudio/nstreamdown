@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDirs": [".", "../.."],
+    "jsx": "react",
+    "baseUrl": ".",
+    "paths": {
+      "@nstudio/nstreamdown": ["../../packages/nstreamdown/index.ios.ts"],
+      "@nstudio/nstreamdown/react": ["../../packages/nstreamdown/react/index.ts"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "files": ["./references.d.ts"],
+  "exclude": ["node_modules", "platforms"]
+}

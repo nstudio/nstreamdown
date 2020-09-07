@@ -1,0 +1,43 @@
+{
+  "name": "demo",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/demo/src",
+  "projectType": "application",
+  "prefix": "demo",
+  "targets": {
+    "build": {
+      "executor": "@nativescript/nx:build",
+      "options": {
+        "noHmr": true,
+        "production": true,
+        "uglify": true,
+        "release": true,
+        "forDevice": true,
+        "tsConfig": "apps/demo/tsconfig.json"
+      },
+      "dependsOn": [
+        {
+          "target": "build.all",
+          "dependencies": true
+        }
+      ]
+    },
+    "clean": {
+      "executor": "@nativescript/nx:clean",
+      "options": {}
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "debug": {
+      "executor": "@nativescript/nx:debug",
+      "options": {
+        "noHmr": true,
+        "uglify": false,
+        "release": false,
+        "forDevice": false,
+        "prepare": false
+      }
+    }
+  }
+}
