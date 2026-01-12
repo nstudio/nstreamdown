@@ -2,6 +2,10 @@
 
 Native streaming markdown for NativeScript apps.
 
+[![nstreamdown Preview](nstreamdown-preview.png)](https://www.youtube.com/watch?v=35gF48ZMlZc)
+
+Tap image to watch it in action.
+
 ## Prerequisites
 
 Before you begin, make sure you have:
