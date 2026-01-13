@@ -3,19 +3,55 @@
         <!-- Headings -->
         {#if isHeading(token)}
             <label
-                text={token.content}
                 class="{getHeadingClass(getHeadingLevel(token))} text-slate-800 mb-2"
                 textWrap={true}
-            />
+            >
+                <formattedString>
+                    {#each token.children || [{ type: 'text', content: token.content }] as child}
+                        {#if child.type === 'bold'}
+                            <span text={child.content} class="font-bold" />
+                        {:else if child.type === 'italic'}
+                            <span text={child.content} class="italic" />
+                        {:else if child.type === 'bold-italic'}
+                            <span text={child.content} class="font-bold italic" />
+                        {:else if child.type === 'code'}
+                            <span text={child.content} class="font-mono bg-slate-200 text-pink-600" />
+                        {:else if child.type === 'strikethrough'}
+                            <span text={child.content} class="line-through" />
+                        {:else}
+                            <span text={child.content} />
+                        {/if}
+                    {/each}
+                </formattedString>
+            </label>
         {/if}
 
         <!-- Paragraphs -->
         {#if token.type === 'paragraph'}
             <label
-                text={token.content}
                 class="text-base text-slate-700 mb-3 leading-6"
                 textWrap={true}
-            />
+            >
+                <formattedString>
+                    {#each token.children || [{ type: 'text', content: token.content }] as child}
+                        {#if child.type === 'bold'}
+                            <span text={child.content} class="font-bold" />
+                        {:else if child.type === 'italic'}
+                            <span text={child.content} class="italic" />
+                        {:else if child.type === 'bold-italic'}
+                            <span text={child.content} class="font-bold italic" />
+                        {:else if child.type === 'code'}
+                            <span text={child.content} class="font-mono bg-slate-200 text-pink-600" />
+                        {:else if child.type === 'strikethrough'}
+                            <span text={child.content} class="line-through" />
+                        {:else if child.type === 'link'}
+                            <span text={child.content} class="text-blue-600 underline" />
+                        {:else}
+                            <span text={child.content} />
+                        {/if}
+                    {/each}
+                </formattedString>
+            </label>
         {/if}
 
         <!-- Code blocks -->
@@ -141,7 +177,6 @@
     // Props
     export let content: string = '';
     export let config: StreamdownConfig = {};
-    export let isStreaming: boolean = false;
 
     // Internal state
     let markdown = '';

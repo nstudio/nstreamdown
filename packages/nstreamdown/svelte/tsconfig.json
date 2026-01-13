@@ -1,0 +1,15 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "../../../dist/out-tsc",
+    "rootDir": "..",
+    "baseUrl": ".",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "paths": {
+      "@nstudio/nstreamdown": ["../index.d.ts"]
+    }
+  },
+  "include": ["**/*.ts", "../references.d.ts"],
+  "exclude": ["node_modules"]
+}

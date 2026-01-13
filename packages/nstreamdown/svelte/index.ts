@@ -1,7 +1,6 @@
 /**
  * NativeScript Streamdown Svelte Components
  *
- * Export all markdown rendering components for Svelte applications
  */
 
 // Main component

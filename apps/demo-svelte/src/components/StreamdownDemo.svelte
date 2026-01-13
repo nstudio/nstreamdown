@@ -2,9 +2,9 @@
     <actionBar flat={true} class="bg-slate-50" title="Streaming Demo">
         <navigationButton text="" android={{ systemIcon: 'ic_menu_back' }} on:tap={() => dispatch('back')} />
         <actionItem ios={{ position: 'right' }} on:tap={toggleStreaming}>
-            {#if $isIOS && isStreaming}
+            {#if isApple && isStreaming}
                 <image src="sys://stop.fill" class="w-5 h-5" />
-            {:else if $isIOS && !isStreaming}
+            {:else if isApple && !isStreaming}
                 <image src="sys://play.fill" class="w-5 h-5" />
             {:else}
                 <label text={isStreaming ? 'Stop' : 'Start'} class="text-blue-600 font-medium px-2" />
@@ -56,7 +56,6 @@
 
 <script lang="ts">
     import { createEventDispatcher, onDestroy } from 'svelte';
-    import { isIOS } from '@nativescript/core';
     import { Streamdown } from '@nstudio/nstreamdown/svelte';
     import { writable } from 'svelte/store';
 
@@ -173,7 +172,7 @@ Streamdown supports GFM features like:
     let startTime = 0;
 
     // Store for isIOS to use in template
-    const $isIOS = isIOS;
+    const isApple = __APPLE__;
 
     $: config = {
         mode: streamingMode,

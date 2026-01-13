@@ -14,6 +14,7 @@
         "assets": [
           "packages/nstreamdown/*.md",
           "packages/nstreamdown/index.d.ts",
+          "packages/nstreamdown/nativescript.webpack.js",
           "LICENSE",
           {
             "glob": "**/*",
@@ -33,12 +34,14 @@
           {
             "glob": "**/*",
             "input": "packages/nstreamdown/svelte/",
-            "output": "./svelte/"
+            "output": "./svelte/",
+            "ignore": ["**/tsconfig.json"]
           },
           {
             "glob": "**/*",
             "input": "packages/nstreamdown/vue/",
-            "output": "./vue/"
+            "output": "./vue/",
+            "ignore": ["**/tsconfig.json"]
           }
         ],
         "dependsOn": [
