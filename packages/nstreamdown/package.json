@@ -1,6 +1,6 @@
 {
   "name": "@nstudio/nstreamdown",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Native iOS/Android streaming markdown rendering for NativeScript, inspired by streamdown.ai",
   "main": "index",
   "types": "index.d.ts",
