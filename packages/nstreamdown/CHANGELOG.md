@@ -1,3 +1,13 @@
+## 1.0.2 (2026-01-20)
+
+### 🚀 Features
+
+- solidjs improvements ([930a2ba](https://github.com/nstudio/nstreamdown/commit/930a2ba))
+
+### ❤️ Thank You
+
+- Nathan Walker
+
 ## 1.0.1 (2026-01-13)
 
 ### 🚀 Features
