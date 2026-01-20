@@ -1,5 +1,4 @@
-import { View } from '@nativescript/core';
-import { ensureMainThread } from './menu.common';
+import { View, Utils } from '@nativescript/core';
 import type { MenuItem, MenuConfig, MenuResult } from './menu.common';
 
 export type { MenuItem, MenuConfig, MenuResult };
@@ -16,7 +15,7 @@ let menuCounter = 0;
  */
 export function showMenu(anchorView: View, config: MenuConfig): Promise<MenuResult | null> {
   return new Promise((resolve) => {
-    ensureMainThread(() => {
+    Utils.executeOnMainThread(() => {
       const nativeView = anchorView.nativeView as UIView;
 
       if (!nativeView) {
@@ -25,10 +24,7 @@ export function showMenu(anchorView: View, config: MenuConfig): Promise<MenuResu
         return;
       }
 
-      // Check iOS version - UIMenu requires iOS 14+
-      const iosVersion = parseFloat(UIDevice.currentDevice.systemVersion);
-
-      if (iosVersion >= 14) {
+      if (Utils.SDK_VERSION >= 14) {
         showNativeDropdownMenu(nativeView, config, resolve);
       } else {
         showActionSheetFallback(nativeView, config, resolve);

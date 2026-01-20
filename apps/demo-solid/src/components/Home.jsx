@@ -1,115 +1,101 @@
-import { createSignal, For } from 'solid-js';
+import { For } from 'solid-js';
 
 const demos = [
   {
     id: 'demo',
     title: 'Streaming Demo',
-    description: 'Watch markdown stream in real-time with syntax highlighting',
+    description: 'Watch markdown render in real-time',
     icon: '⚡',
-    color: 'bg-blue-500',
+    color: 'bg-green-100',
+    darkColor: 'dark:bg-green-900',
   },
   {
     id: 'chat',
     title: 'Chat Interface',
-    description: 'Interactive chat with AI-style message streaming',
+    description: 'Interactive AI chat with streaming',
     icon: '💬',
-    color: 'bg-emerald-500',
+    color: 'bg-purple-100',
+    darkColor: 'dark:bg-purple-900',
   },
 ];
 
 const features = [
-  { icon: '📝', title: 'Full Markdown', desc: 'Headers, lists, tables' },
-  { icon: '🎨', title: 'Syntax Highlighting', desc: '50+ languages' },
-  { icon: '📐', title: 'Math Support', desc: 'LaTeX equations' },
-  { icon: '🔗', title: 'Interactive Links', desc: 'Tappable URLs' },
-  { icon: '🌊', title: 'Stream Ready', desc: 'Token-by-token' },
-  { icon: '📱', title: 'Native Views', desc: 'iOS & Android' },
-  { icon: '🎯', title: 'Accessibility', desc: 'VoiceOver ready' },
-  { icon: '🌙', title: 'Dark Mode', desc: 'Theme support' },
-  { icon: '📊', title: 'Tables', desc: 'GFM tables' },
-  { icon: '✅', title: 'Task Lists', desc: 'Checkboxes' },
+  'Stream markdown',
+  'Incomplete tokens',
+  'GFM support',
+  'Code highlighting',
+  'Tables',
+  'Math (LaTeX)',
+  'Images',
+  'Native performance',
+  'Dark mode',
+  'CJK support',
 ];
+
+const getFeatureRow = (index) => Math.floor(index / 2);
+const getFeatureCol = (index) => index % 2;
 
 export const Home = (props) => {
   return (
     <page>
-      <actionbar flat={true} class="bg-slate-50">
-        <label text="Streamdown" class="font-bold text-lg" />
-      </actionbar>
+      <actionbar flat={true} class="bg-slate-50 dark:bg-slate-900" title="nstreamdown">
 
-      <scrollview class="bg-slate-50">
-        <stacklayout class="pb-8">
-          {/* Hero Section */}
-          <stacklayout class="px-6 pt-6 pb-4">
-            <label text="@nstudio/nstreamdown" class="text-3xl font-bold text-slate-800" />
-            <label
-              text="Native iOS & Android streaming markdown for NativeScript"
-              class="text-base text-slate-500 mt-2"
-              textWrap={true}
-            />
-          </stacklayout>
+        </actionbar>
+      <gridlayout rows="*" class="bg-slate-50 dark:bg-slate-900">
 
-          {/* Demo Cards */}
-          <stacklayout class="px-4">
+        {/* Content */}
+        <scrollview>
+          <stacklayout class="p-4 pt-6">
+            {/* Hero section */}
+            <stacklayout class="bg-gradient-to-br from-blue-600 to-purple-700 dark:from-blue-700 dark:to-purple-800 rounded-2xl p-6 mb-6">
+              <label text="Native Markdown Streaming" class="text-xl dark:text-white text-black font-bold text-center leading-[3]" />
+              <label text="Real-time AI streaming with beautiful markdown rendering, powered by NativeScript." class="text-sm text-blue-400 dark:text-blue-200 text-center leading-[3] mt-2" textWrap={true} />
+            </stacklayout>
+
+            {/* Demo cards */}
+            <label text="Demos" class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide mb-3" />
+
             <For each={demos}>
               {(demo) => (
-                <gridlayout
-                  columns="auto, *"
-                  rows="auto, auto"
-                  class="bg-white rounded-2xl p-4 mb-3 shadow-sm"
-                  on:tap={() => props.onNavigate(demo.id)}
-                >
-                  <label
-                    col="0"
-                    row="0"
-                    rowSpan="2"
-                    text={demo.icon}
-                    class={`text-3xl ${demo.color} w-14 h-14 text-center leading-[56] rounded-xl mr-4`}
-                  />
-                  <label
-                    col="1"
-                    row="0"
-                    text={demo.title}
-                    class="text-lg font-semibold text-slate-800"
-                  />
-                  <label
-                    col="1"
-                    row="1"
-                    text={demo.description}
-                    class="text-sm text-slate-500"
-                    textWrap={true}
-                  />
-                </gridlayout>
-              )}
-            </For>
-          </stacklayout>
+                <stacklayout class="mb-3">
+                  <gridlayout columns="48, *, auto" rows="48" class="bg-white dark:bg-slate-800 rounded-xl p-3 shadow-sm" on:tap={() => props.onNavigate(demo.id)}>
+                    {/* Icon container - vertically centered via GridLayout */}
+                    <gridlayout col="0" rows="*" columns="*" class={`w-12 h-12 rounded-xl ${demo.color} ${demo.darkColor}`}>
+                      <label text={demo.icon} class="text-xl text-center" />
+                    </gridlayout>
 
-          {/* Features Section */}
-          <label text="Features" class="text-xl font-bold text-slate-800 px-6 mt-6 mb-3" />
+                    {/* Text - use nested GridLayout for vertical centering */}
+                    <gridlayout col="1" rows="*,auto, auto,*" class="ml-3">
+                      <label row="1" text={demo.title} class="text-base font-semibold text-slate-800 dark:text-slate-100 leading-[3]" />
+                      <label row="2" text={demo.description} class="text-xs text-slate-500 dark:text-slate-400 leading-[3]" textWrap={true} />
+                    </gridlayout>
 
-          <flexboxlayout
-            flexWrap="wrap"
-            justifyContent="flex-start"
-            class="px-4"
-          >
-            <For each={features}>
-              {(feature) => (
-                <stacklayout class="w-[30%] bg-white rounded-xl p-3 m-[1.5%] items-center">
-                  <label text={feature.icon} class="text-2xl mb-1" />
-                  <label text={feature.title} class="text-xs font-medium text-slate-700 text-center" />
-                  <label text={feature.desc} class="text-[10] text-slate-400 text-center" />
+                    {/* Arrow */}
+                    <label col="2" text="›" class="text-2xl text-slate-300 dark:text-slate-600 font-light" />
+                  </gridlayout>
                 </stacklayout>
               )}
             </For>
-          </flexboxlayout>
 
-          {/* Footer */}
-          <stacklayout class="items-center mt-8 px-6">
-            <label text="Built with ❤️ by @aspect" class="text-sm text-slate-400" />
-            <label text="NativeScript + Solid.js" class="text-xs text-slate-300 mt-1" />
+            {/* Features list */}
+            <label text="Features" class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide mt-6 mb-3" />
+
+            <gridlayout columns="*, *" rows="auto, auto, auto, auto, auto" class="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm">
+              <For each={features}>
+                {(feature, index) => (
+                  <gridlayout row={getFeatureRow(index())} col={getFeatureCol(index())} columns="auto, *" class="p-2">
+                    <label col="0" text="✓" class="text-green-500 dark:text-green-400 text-sm mr-2" />
+                    <label col="1" text={feature} class="text-sm text-slate-600 dark:text-slate-300 leading-[3]" textWrap={true} />
+                  </gridlayout>
+                )}
+              </For>
+            </gridlayout>
+
+            {/* Footer */}
+            <label text="Inspired by streamdown.ai • Built for NativeScript" class="text-xs text-slate-400 dark:text-slate-500 text-center mt-8 mb-4" />
           </stacklayout>
-        </stacklayout>
-      </scrollview>
+        </scrollview>
+      </gridlayout>
     </page>
   );
 };

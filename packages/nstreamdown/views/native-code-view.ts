@@ -6,20 +6,6 @@
  */
 import { View, Property, booleanConverter, Color } from '@nativescript/core';
 
-// Declare iOS types available at runtime
-declare const UITextView: any;
-declare const UIFont: any;
-declare const UIFontWeight: any;
-declare const UIColor: any;
-declare const UIEdgeInsetsMake: any;
-declare const NSMutableAttributedString: any;
-declare const NSMakeRange: any;
-declare const NSFontAttributeName: any;
-declare const NSForegroundColorAttributeName: any;
-declare const NSObliquenessAttributeName: any;
-
-// Declare Android types available at runtime
-declare const android: any;
 declare const org: any;
 
 // Define properties
@@ -111,7 +97,12 @@ export class NativeCodeView extends View {
     textView.scrollEnabled = true;
     textView.showsHorizontalScrollIndicator = true;
     textView.showsVerticalScrollIndicator = false;
-    textView.textContainerInset = UIEdgeInsetsMake(12, 12, 12, 12);
+    textView.textContainerInset = new UIEdgeInsets({
+      top: 12,
+      left: 12,
+      bottom: 12,
+      right: 12,
+    });
     textView.backgroundColor = UIColor.colorWithRedGreenBlueAlpha(0.12, 0.16, 0.22, 1);
     textView.layer.cornerRadius = 8;
 
@@ -228,10 +219,11 @@ export class NativeCodeView extends View {
   private createHighlightedCode(): NSAttributedString {
     const code = this.code || '';
     const attributedString = NSMutableAttributedString.alloc().initWithString(code);
-    const fullRange = NSMakeRange(0, code.length);
+
+    const fullRange = NSRangeFromString(`{0,${code.length}}`);
 
     // Base styling
-    const baseFont = UIFont.monospacedSystemFontOfSizeWeight(14, UIFontWeight.Regular);
+    const baseFont = UIFont.monospacedSystemFontOfSizeWeight(14, UIFontWeightRegular);
     const baseColor = this.darkMode ? UIColor.colorWithRedGreenBlueAlpha(0.85, 0.85, 0.85, 1) : UIColor.colorWithRedGreenBlueAlpha(0.2, 0.2, 0.2, 1);
 
     attributedString.addAttributeValueRange(NSFontAttributeName, baseFont, fullRange);
@@ -255,8 +247,7 @@ export class NativeCodeView extends View {
           regex.lastIndex++;
           continue;
         }
-
-        const matchRange = NSMakeRange(match.index, match[0].length);
+        const matchRange = NSRangeFromString(`{${match.index},${match[0].length}}`);
 
         // Color
         const uiColor = this.hexToUIColor(color);
@@ -264,11 +255,11 @@ export class NativeCodeView extends View {
 
         // Font style
         if (fontStyle === 'bold') {
-          const boldFont = UIFont.monospacedSystemFontOfSizeWeight(14, UIFontWeight.Bold);
+          const boldFont = UIFont.monospacedSystemFontOfSizeWeight(14, UIFontWeightBold);
           attributedString.addAttributeValueRange(NSFontAttributeName, boldFont, matchRange);
         } else if (fontStyle === 'italic') {
           // iOS monospace fonts don't have italic variants, so we use oblique transform
-          const italicFont = UIFont.monospacedSystemFontOfSizeWeight(14, UIFontWeight.Regular);
+          const italicFont = UIFont.monospacedSystemFontOfSizeWeight(14, UIFontWeightRegular);
           attributedString.addAttributeValueRange(NSFontAttributeName, italicFont, matchRange);
           attributedString.addAttributeValueRange(NSObliquenessAttributeName, 0.2, matchRange);
         }

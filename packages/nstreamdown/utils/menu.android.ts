@@ -1,5 +1,5 @@
-import { View } from '@nativescript/core';
-import { MenuItem, MenuConfig, MenuResult, ensureMainThread } from './menu.common';
+import { View, Utils } from '@nativescript/core';
+import { MenuItem, MenuConfig, MenuResult } from './menu.common';
 
 export { MenuItem, MenuConfig, MenuResult };
 
@@ -9,7 +9,7 @@ export { MenuItem, MenuConfig, MenuResult };
  */
 export function showMenu(anchorView: View, config: MenuConfig): Promise<MenuResult | null> {
   return new Promise((resolve) => {
-    ensureMainThread(() => {
+    Utils.executeOnMainThread(() => {
       const nativeView = anchorView.nativeView as android.view.View;
 
       if (!nativeView) {

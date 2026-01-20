@@ -31,10 +31,10 @@
     "email": "oss@nstudio.io"
   },
   "bugs": {
-    "url": "https://github.com/nstudio/streamdown/issues"
+    "url": "https://github.com/nstudio/nstreamdown/issues"
   },
   "license": "Apache-2.0",
-  "homepage": "https://github.com/nstudio/streamdown",
+  "homepage": "https://github.com/nstudio/nstreamdown",
   "readmeFilename": "README.md",
   "bootstrapper": "@nativescript/plugin-seed",
   "peerDependencies": {

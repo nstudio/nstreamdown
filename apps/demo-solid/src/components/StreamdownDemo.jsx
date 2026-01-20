@@ -1,5 +1,5 @@
 import { createSignal, onCleanup } from 'solid-js';
-import { isIOS } from '@nativescript/core';
+import { isIOS, ScrollView } from '@nativescript/core';
 import { Streamdown } from '@nstudio/nstreamdown/solid';
 
 const DEMO_MARKDOWN = `# NativeScript Streamdown 🚀
@@ -112,6 +112,7 @@ export const StreamdownDemo = (props) => {
   let streamIndex = 0;
   let streamInterval = null;
   let startTime = 0;
+  let scrollViewRef = null;
 
   const config = () => ({
     mode: streamingMode(),
@@ -125,6 +126,14 @@ export const StreamdownDemo = (props) => {
       clearInterval(streamInterval);
     }
   });
+
+  const scrollToBottom = () => {
+    if (scrollViewRef) {
+      setTimeout(() => {
+        scrollViewRef.scrollToVerticalOffset(scrollViewRef.scrollableHeight, false);
+      }, 10);
+    }
+  };
 
   const updateStats = (content) => {
     setCharCount(content.length.toString());
@@ -151,6 +160,7 @@ export const StreamdownDemo = (props) => {
         setCurrentContent(newContent);
         updateStats(newContent);
         streamIndex += chunksToProcess;
+        scrollToBottom();
       } else {
         stopStreaming();
       }
@@ -185,11 +195,15 @@ export const StreamdownDemo = (props) => {
   return (
     <page>
       <actionbar flat={true} class="bg-slate-50" title="Streaming Demo">
-        <navigationbutton text="" android={{ systemIcon: 'ic_menu_back' }} on:tap={props.onBack} />
-        <actionitem ios={{ position: 'right' }} on:tap={toggleStreaming}>
-          {isIOS && isStreaming() && <image src="sys://stop.fill" class="w-5 h-5" />}
-          {isIOS && !isStreaming() && <image src="sys://play.fill" class="w-5 h-5" />}
-          {!isIOS && <label text={isStreaming() ? 'Stop' : 'Start'} class="text-blue-600 font-medium px-2" />}
+        <actionitem position="left">
+  
+            <label text="Back" class=" font-medium px-2" on:tap={props.onBack} />
+          
+        </actionitem>
+        <actionitem position="right">
+          {isIOS && isStreaming() && <image col="2" src="sys://stop.fill" class="w-5 h-5" on:tap={toggleStreaming} />}
+          {isIOS && !isStreaming() && <image col="2" src="sys://play.fill" class="w-5 h-5" on:tap={toggleStreaming} />}
+          {!isIOS && <label col="2" text={isStreaming() ? 'Stop' : 'Start'} class="text-blue-600 font-medium px-2" on:tap={toggleStreaming} />}
         </actionitem>
       </actionbar>
 
@@ -211,7 +225,7 @@ export const StreamdownDemo = (props) => {
         </gridlayout>
 
         {/* Streamdown content */}
-        <scrollview row="1" class="mt-3">
+        <scrollview row="1" class="mt-3" ref={(el) => (scrollViewRef = el)}>
           <stacklayout class="mx-4 mb-20 bg-white rounded-xl p-4 shadow-sm">
             <Streamdown content={currentContent()} config={config()} />
           </stacklayout>

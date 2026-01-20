@@ -250,7 +250,9 @@ export const ChatDemo = (props) => {
   return (
     <page>
       <actionbar flat={true} class="bg-slate-50" title="Chat Demo">
-        <navigationbutton text="" android={{ systemIcon: 'ic_menu_back' }} on:tap={props.onBack} />
+        <actionitem position="left">
+          <label text="Back" class="font-medium px-2" on:tap={props.onBack} />
+        </actionitem>
       </actionbar>
 
       <gridlayout rows="*, auto" class="bg-slate-100">

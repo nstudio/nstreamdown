@@ -28,17 +28,6 @@ export interface MenuResult {
 }
 
 /**
- * Helper to ensure we're on the main thread for UI operations
- */
-export function ensureMainThread(callback: () => void): void {
-  if (Utils.isMainThread()) {
-    callback();
-  } else {
-    Utils.executeOnMainThread(callback);
-  }
-}
-
-/**
  * Fallback showMenu implementation using Dialogs.action
  * This is used when platform-specific implementations aren't available
  */
