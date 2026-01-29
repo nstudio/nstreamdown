@@ -10,5 +10,6 @@
     "outDir": "../../../dist/out-tsc",
     "declarationDir": "../../../dist/out-tsc"
   },
-  "files": ["index.ts"]
+  "files": ["index.ts"],
+  "include": ["../references.d.ts"]
 }

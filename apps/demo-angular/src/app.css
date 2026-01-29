@@ -45,3 +45,7 @@ Button {
 .h-center {
   horizontal-align: center;
 }
+
+Page, page-router-outlet, Frame {
+  background-color: rgb(15 23 42);
+}

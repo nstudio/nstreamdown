@@ -448,3 +448,202 @@ export function openUrl(url: string): boolean {
   }
   return false;
 }
+
+// ============================================================================
+// Mermaid Diagram Utilities
+// ============================================================================
+
+/** Mermaid CDN URL - using ESM build for modern browsers */
+export const MERMAID_CDN = 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+
+/**
+ * Options for generating mermaid HTML
+ */
+export interface MermaidHtmlOptions {
+  /** Whether to use dark mode theme */
+  darkMode?: boolean;
+  /** Whether to enable user scaling (fullscreen mode) */
+  allowZoom?: boolean;
+}
+
+/**
+ * Generate HTML content for rendering mermaid diagrams
+ * Used by all framework implementations
+ */
+export function generateMermaidHTML(diagram: string, options: MermaidHtmlOptions = {}): string {
+  const { darkMode = true, allowZoom = false } = options;
+  const theme = darkMode ? 'dark' : 'default';
+  const bgColor = darkMode ? '#1e293b' : '#ffffff';
+  const textColor = darkMode ? '#e2e8f0' : '#1a1a1a';
+
+  // Escape the diagram content for safe embedding in HTML
+  const escapedDiagram = diagram.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+
+  const viewportMeta = allowZoom ? '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">' : '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">';
+
+  const bodyStyle = allowZoom ? `width: 100%; height: 100%; background-color: ${bgColor}; overflow: auto;` : `width: 100%; height: 100%; background-color: ${bgColor}; overflow: hidden; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;`;
+
+  const containerStyle = allowZoom ? 'display: flex; justify-content: center; align-items: center; min-height: 100%; padding: 20px;' : 'display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; padding: 16px;';
+
+  const useMaxWidth = !allowZoom;
+
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  ${viewportMeta}
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      ${bodyStyle}
+    }
+    #container {
+      ${containerStyle}
+    }
+    .mermaid {
+      max-width: 100%;
+      ${allowZoom ? '' : 'overflow: hidden;'}
+    }
+    .mermaid svg {
+      max-width: 100%;
+      height: auto;
+    }
+    /* Loading state */
+    .loading {
+      color: ${textColor};
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 14px;
+      text-align: center;
+    }
+    /* Error state */
+    .error {
+      color: #ef4444;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 14px;
+      text-align: center;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <pre class="mermaid">${escapedDiagram}</pre>
+  </div>
+  <script type="module">
+    import mermaid from '${MERMAID_CDN}';
+
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: '${theme}',
+      securityLevel: 'loose',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+      flowchart: {
+        useMaxWidth: ${useMaxWidth},
+        htmlLabels: true,
+        curve: 'basis'
+      },
+      sequence: {
+        useMaxWidth: ${useMaxWidth},
+        diagramMarginX: 8,
+        diagramMarginY: 8
+      },
+      gantt: {
+        useMaxWidth: ${useMaxWidth}
+      },
+      pie: {
+        useMaxWidth: ${useMaxWidth}
+      }
+    });
+
+    // Handle render completion
+    mermaid.run().then(() => {
+      // Notify iOS that rendering is complete
+      if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.renderComplete) {
+        const svg = document.querySelector('.mermaid svg');
+        if (svg) {
+          const rect = svg.getBoundingClientRect();
+          window.webkit.messageHandlers.renderComplete.postMessage({
+            width: rect.width,
+            height: rect.height
+          });
+        }
+      }
+    }).catch((error) => {
+      console.error('Mermaid render error:', error);
+      const container = document.getElementById('container');
+      if (container) {
+        container.innerHTML = '<div class="error">Failed to render diagram</div>';
+      }
+    });
+  </script>
+</body>
+</html>
+`;
+}
+
+/**
+ * Configure iOS WKWebView for mermaid rendering
+ * @param wkWebView - The WKWebView native instance
+ * @param scrollEnabled - Whether scrolling should be enabled
+ */
+export function configureIOSWebViewForMermaid(wkWebView: any, scrollEnabled = false): void {
+  if (!wkWebView) return;
+
+  wkWebView.scrollView.scrollEnabled = scrollEnabled;
+  wkWebView.scrollView.bounces = scrollEnabled;
+  if (scrollEnabled) {
+    wkWebView.scrollView.minimumZoomScale = 1.0;
+    wkWebView.scrollView.maximumZoomScale = 3.0;
+  }
+  wkWebView.opaque = false;
+  wkWebView.backgroundColor = UIColor.clearColor;
+}
+
+/**
+ * Configure Android WebView for mermaid rendering
+ * @param androidWebView - The Android WebView native instance
+ * @param zoomEnabled - Whether zoom controls should be enabled
+ */
+export function configureAndroidWebViewForMermaid(androidWebView: any, zoomEnabled = false): void {
+  if (!androidWebView) return;
+
+  const settings = androidWebView.getSettings();
+  settings.setJavaScriptEnabled(true);
+  settings.setDomStorageEnabled(true); // Required for mermaid.js
+  settings.setAllowFileAccess(false);
+  settings.setAllowContentAccess(false);
+
+  if (zoomEnabled) {
+    settings.setBuiltInZoomControls(true);
+    settings.setDisplayZoomControls(false);
+    settings.setSupportZoom(true);
+  }
+
+  androidWebView.setBackgroundColor(0x00000000); // Transparent background
+}
+
+/**
+ * Load mermaid HTML into an iOS WKWebView
+ * @param wkWebView - The WKWebView native instance
+ * @param html - The HTML content to load
+ */
+export function loadMermaidIntoIOSWebView(wkWebView: any, html: string): void {
+  if (!wkWebView || !html) return;
+  wkWebView.loadHTMLStringBaseURL(html, null);
+}
+
+/**
+ * Load mermaid HTML into an Android WebView
+ * @param androidWebView - The Android WebView native instance
+ * @param html - The HTML content to load
+ */
+export function loadMermaidIntoAndroidWebView(androidWebView: any, html: string): void {
+  if (!androidWebView || !html) return;
+  // Use loadDataWithBaseURL with a base URL to allow loading CDN resources
+  androidWebView.loadDataWithBaseURL('https://cdn.jsdelivr.net', html, 'text/html', 'UTF-8', null);
+}

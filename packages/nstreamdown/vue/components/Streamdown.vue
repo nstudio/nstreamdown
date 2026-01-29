@@ -4,6 +4,7 @@ import { parseMarkdown, parseInlineFormatting, openUrl, remend } from '@nstudio/
 import type { MarkdownToken } from '@nstudio/nstreamdown';
 import CodeBlock from './CodeBlock.vue';
 import MdMath from './MdMath.vue';
+import MdMermaid from './MdMermaid.vue';
 import MdTable from './MdTable.vue';
 
 export interface StreamdownConfig {
@@ -284,6 +285,14 @@ function onLinkTap(token: MarkdownToken) {
         v-else-if="token.type === 'math-block'"
         :content="token.content"
         :block="true"
+      />
+
+      <!-- Mermaid diagrams -->
+      <MdMermaid
+        v-else-if="token.type === 'mermaid-block'"
+        :content="token.content"
+        :darkMode="true"
+        :isIncomplete="getIsIncomplete(token)"
       />
     </template>
 

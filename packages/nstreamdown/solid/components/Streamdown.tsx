@@ -7,6 +7,7 @@ import { isIOS, isAndroid } from '@nativescript/core';
 import { parseMarkdown, parseInlineFormatting, copyToClipboard
 } from '@nstudio/nstreamdown';
 import type { MarkdownToken } from '@nstudio/nstreamdown';
+import { MdMermaid } from './MdMermaid';
 
 // Declare iOS types available at runtime
 declare type UILabel = any;
@@ -691,6 +692,14 @@ export function Streamdown(props: StreamdownProps): JSX.Element {
                   <label text={latexToUnicode(token.content)} class="text-xl text-gray-900 dark:text-gray-100 text-center font-medium" textWrap={true} />
                 </stacklayout>
               </gridlayout>
+            </Match>
+
+            {/* Mermaid diagrams */}
+            <Match when={token.type === 'mermaid-block'}>
+              <MdMermaid
+                content={token.content}
+                darkMode={true}
+              />
             </Match>
           </Switch>
         )}

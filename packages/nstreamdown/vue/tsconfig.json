@@ -5,7 +5,7 @@
     "rootDir": "..",
     "baseUrl": ".",
     "paths": {
-      "@nstudio/nstreamdown": ["../index.ios.ts"],
+      "@nstudio/nstreamdown": [".."],
       "nativescript-vue": ["../../../node_modules/nativescript-vue"]
     }
   },

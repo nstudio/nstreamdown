@@ -26,6 +26,7 @@ import { MdTable } from './md-table';
 import { MdImage } from './md-image';
 import { MdHorizontalRule } from './md-horizontal-rule';
 import { MdMath } from './md-math';
+import { MdMermaid } from './md-mermaid';
 import { MdInline } from './md-inline';
 
 export interface StreamdownConfig {
@@ -93,6 +94,11 @@ export interface StreamdownConfig {
         @if (token.type === 'math-block') {
           <MdMath [content]="token.content" [block]="true"></MdMath>
         }
+
+        <!-- Mermaid diagrams -->
+        @if (token.type === 'mermaid') {
+          <MdMermaid [content]="token.content" [isIncomplete]="getIsIncomplete(token)"></MdMermaid>
+        }
       }
 
       <!-- Streaming caret -->
@@ -101,7 +107,7 @@ export interface StreamdownConfig {
       }
     </StackLayout>
   `,
-  imports: [NativeScriptCommonModule, MdHeading, MdParagraph, MdCodeBlock, MdBlockquote, MdList, MdTable, MdImage, MdHorizontalRule, MdMath, MdInline],
+  imports: [NativeScriptCommonModule, MdHeading, MdParagraph, MdCodeBlock, MdBlockquote, MdList, MdTable, MdImage, MdHorizontalRule, MdMath, MdMermaid, MdInline],
   schemas: [NO_ERRORS_SCHEMA],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

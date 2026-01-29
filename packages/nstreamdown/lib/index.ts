@@ -9,6 +9,6 @@ export { parseMarkdown, parseMarkdownIntoBlocks, parseInlineFormatting, remend }
 
 export type { MarkdownToken, MarkdownTokenType, ParsedMarkdown } from './markdown-parser';
 
-export { lightTheme, darkTheme, cn, copyToClipboard, openUrl, highlightCode, getHeadingFontSize, debounce } from './utils';
+export { lightTheme, darkTheme, cn, copyToClipboard, openUrl, highlightCode, getHeadingFontSize, debounce, generateMermaidHTML, configureIOSWebViewForMermaid, configureAndroidWebViewForMermaid, loadMermaidIntoIOSWebView, loadMermaidIntoAndroidWebView, MERMAID_CDN } from './utils';
 
-export type { StreamdownTheme, HighlightedToken } from './utils';
+export type { StreamdownTheme, HighlightedToken, MermaidHtmlOptions } from './utils';

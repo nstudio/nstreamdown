@@ -1,5 +1,6 @@
 /// <reference path="../../node_modules/@nativescript/types/index.d.ts" />
 /// <reference path="./typings/index.d.ts" />
+/// <reference path="./typings/org.nativescript.streamdown.d.ts" />
 
 // nativescript-vue module declaration for library builds
 declare module 'nativescript-vue' {

@@ -5,7 +5,7 @@
     "jsx": "react",
     "baseUrl": ".",
     "paths": {
-      "@nstudio/nstreamdown": ["../../packages/nstreamdown/index.ios.ts"],
+      "@nstudio/nstreamdown": ["../../packages/nstreamdown"],
       "@nstudio/nstreamdown/react": ["../../packages/nstreamdown/react/index.ts"]
     }
   },

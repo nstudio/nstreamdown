@@ -1,9 +1,10 @@
+/// <reference path="../references.d.ts" />
 import { NgModule } from '@angular/core';
 
 // Export all Angular components
-export { Streamdown, MdHeading, MdParagraph, MdCodeBlock, MdBlockquote, MdList, MdTable, MdImage, MdHorizontalRule, MdMath, MdInline, MdText, MdCheckbox, NativeRichText } from './components';
+export { Streamdown, MdHeading, MdParagraph, MdCodeBlock, MdBlockquote, MdList, MdTable, MdImage, MdHorizontalRule, MdMath, MdMermaid, MdMermaidFullscreen, MdInline, MdText, MdCheckbox, NativeRichText } from './components';
 
-export type { StreamdownConfig } from './components';
+export type { StreamdownConfig, MermaidFullscreenData } from './components';
 
 // Export registration function for NativeScript elements
 export { registerStreamdownElements } from './register-elements';

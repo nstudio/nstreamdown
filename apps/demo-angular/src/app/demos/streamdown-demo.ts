@@ -95,6 +95,32 @@ $$
 
 And inline math like $E = mc^2$ works too!
 
+## Mermaid Diagrams
+
+Streamdown supports interactive Mermaid diagrams:
+
+\`\`\`mermaid
+flowchart TD
+    A[Start] --> B{Is it working?}
+    B -->|Yes| C[Great!]
+    B -->|No| D[Debug]
+    D --> B
+    C --> E[Ship it! 🚀]
+\`\`\`
+
+\`\`\`mermaid
+sequenceDiagram
+    participant App
+    participant API
+    participant DB
+    
+    App->>API: POST /chat
+    API->>DB: Store message
+    DB-->>API: OK
+    API-->>App: Stream response
+    Note over App,API: Real-time streaming
+\`\`\`
+
 ## Lists
 
 ### Unordered List

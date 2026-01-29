@@ -2,8 +2,9 @@
  * Demo Home Component
  * Landing page for the NativeScript Streamdown demos
  */
-import { Component, NO_ERRORS_SCHEMA, ChangeDetectionStrategy } from '@angular/core';
+import { Component, NO_ERRORS_SCHEMA, ChangeDetectionStrategy, inject } from '@angular/core';
 import { NativeScriptCommonModule, NativeScriptRouterModule } from '@nativescript/angular';
+import { Page } from '@nativescript/core';
 
 interface DemoItem {
   title: string;
@@ -78,6 +79,7 @@ interface DemoItem {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeDemo {
+  page = inject(Page);
   demos: DemoItem[] = [
     {
       title: 'Streaming Demo',
@@ -95,9 +97,25 @@ export class HomeDemo {
       color: 'bg-purple-100',
       darkColor: 'dark:bg-purple-900',
     },
+    {
+      title: 'Mermaid Diagrams',
+      description: 'Interactive flowcharts, sequences & more',
+      icon: '📊',
+      route: '/mermaid',
+      color: 'bg-blue-100',
+      darkColor: 'dark:bg-blue-900',
+    },
   ];
 
   features = ['Stream markdown', 'Incomplete tokens', 'GFM support', 'Code highlighting', 'Tables', 'Math (LaTeX)', 'Images', 'Native performance', 'Dark mode', 'CJK support'];
+
+  constructor() {
+    if (__ANDROID__) {
+      this.page.backgroundColor = '#000';
+      // @ts-ignore
+      this.page.androidOverflowEdge = 'bottom';
+    }
+  }
 
   getFeatureRow(index: number): number {
     return Math.floor(index / 2);

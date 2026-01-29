@@ -6,6 +6,7 @@ import * as React from 'react';
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { parseMarkdown } from '@nstudio/nstreamdown';
 import type { MarkdownToken } from '@nstudio/nstreamdown';
+import { MdMermaid } from './MdMermaid';
 
 export interface StreamdownConfig {
   /** Mode: 'streaming' for real-time updates, 'static' for complete markdown */
@@ -253,6 +254,17 @@ export function Streamdown({
           text={token.content}
           className="text-base text-slate-700 bg-slate-100 p-3 rounded-lg mb-3 font-mono"
           textWrap={true}
+        />
+      );
+    }
+
+    // Mermaid diagrams
+    if (token.type === 'mermaid-block') {
+      return (
+        <MdMermaid
+          key={key}
+          content={token.content}
+          darkMode={true}
         />
       );
     }

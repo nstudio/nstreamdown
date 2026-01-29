@@ -150,6 +150,14 @@
                 textWrap={true}
             />
         {/if}
+
+        <!-- Mermaid diagrams -->
+        {#if token.type === 'mermaid-block'}
+            <MdMermaid
+                content={token.content}
+                darkMode={true}
+            />
+        {/if}
     {/each}
 
     <!-- Streaming caret -->
@@ -162,6 +170,7 @@
     import { onDestroy } from 'svelte';
     import { parseMarkdown } from '@nstudio/nstreamdown';
     import type { MarkdownToken } from '@nstudio/nstreamdown';
+    import MdMermaid from './MdMermaid.svelte';
 
     export interface StreamdownConfig {
         /** Mode: 'streaming' for real-time updates, 'static' for complete markdown */

@@ -9,25 +9,6 @@ import { Label } from '@nativescript/core';
 import { MarkdownToken, parseInlineFormatting } from '@nstudio/nstreamdown';
 import { lightTheme, darkTheme, StreamdownTheme } from '@nstudio/nstreamdown';
 
-// Declare iOS types available at runtime
-declare const UIFont: any;
-declare const UIFontWeight: any;
-declare const UIFontDescriptorSymbolicTraits: any;
-declare const UIColor: any;
-declare const NSURL: any;
-declare const NSMutableAttributedString: any;
-declare const NSAttributedString: any;
-declare const NSMutableDictionary: any;
-declare const NSMakeRange: any;
-declare const NSFontAttributeName: any;
-declare const NSForegroundColorAttributeName: any;
-declare const NSBackgroundColorAttributeName: any;
-declare const NSStrikethroughStyleAttributeName: any;
-declare const NSUnderlineStyleAttributeName: any;
-declare const NSLinkAttributeName: any;
-declare const NSUnderlineStyle: any;
-declare type NSDictionary<K, V> = any;
-
 @Component({
   selector: 'NativeRichText',
   template: ` <Label #label textWrap="true" [class]="containerClass()"></Label> `,
@@ -129,7 +110,7 @@ export class NativeRichText implements AfterViewInit {
         break;
 
       case 'code-inline':
-        font = UIFont.monospacedSystemFontOfSizeWeight(fontSize - 1, UIFontWeight.Regular);
+        font = UIFont.monospacedSystemFontOfSizeWeight(fontSize - 1, UIFontWeightRegular);
         const codeBgColor = this.uiColorFromColor(currentTheme.bgCode);
         attributes.setObjectForKey(codeBgColor, NSBackgroundColorAttributeName);
         const codeTextColor = this.uiColorFromColor(currentTheme.accentPrimary);
@@ -156,7 +137,7 @@ export class NativeRichText implements AfterViewInit {
         break;
 
       case 'math-inline':
-        font = UIFont.monospacedSystemFontOfSizeWeight(fontSize, UIFontWeight.Regular);
+        font = UIFont.monospacedSystemFontOfSizeWeight(fontSize, UIFontWeightRegular);
         const mathColor = UIColor.systemPurpleColor;
         attributes.setObjectForKey(mathColor, NSForegroundColorAttributeName);
         break;

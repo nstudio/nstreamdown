@@ -14,11 +14,11 @@
     "paths": {
       "~/*": ["src/*"],
       "@/*": ["src/*"],
-      "@nstudio/nstreamdown": ["../../packages/nstreamdown/index.ios.ts"],
+      "@nstudio/nstreamdown": ["../../packages/nstreamdown"],
       "@nstudio/nstreamdown/angular": ["../../packages/nstreamdown/angular/index.ts"]
     }
   },
-  "include": ["src/tests/**/*.ts", "src/**/*.ios.ts", "src/**/*.android.ts"],
+  "include": ["src/tests/**/*.ts", "src/**/*.ios.ts", "src/**/*.android.ts", "../../packages/nstreamdown/**/*.ios.ts", "../../packages/nstreamdown/**/*.android.ts"],
   "files": ["./src/main.ts", "./references.d.ts", "./src/polyfills.ts"],
   "exclude": ["node_modules", "platforms", "e2e"]
 }

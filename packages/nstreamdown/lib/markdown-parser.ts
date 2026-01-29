@@ -3,7 +3,7 @@
  * Handles parsing markdown into tokens and managing incomplete streaming markdown
  */
 
-export type MarkdownTokenType = 'heading1' | 'heading2' | 'heading3' | 'heading4' | 'heading5' | 'heading6' | 'paragraph' | 'code-block' | 'code-inline' | 'blockquote' | 'list-ordered' | 'list-unordered' | 'list-item' | 'table' | 'table-row' | 'table-cell' | 'horizontal-rule' | 'link' | 'image' | 'bold' | 'italic' | 'bold-italic' | 'strikethrough' | 'math-inline' | 'math-block' | 'text';
+export type MarkdownTokenType = 'heading1' | 'heading2' | 'heading3' | 'heading4' | 'heading5' | 'heading6' | 'paragraph' | 'code-block' | 'code-inline' | 'blockquote' | 'list-ordered' | 'list-unordered' | 'list-item' | 'table' | 'table-row' | 'table-cell' | 'horizontal-rule' | 'link' | 'image' | 'bold' | 'italic' | 'bold-italic' | 'strikethrough' | 'math-inline' | 'math-block' | 'mermaid' | 'text';
 
 export interface MarkdownToken {
   type: MarkdownTokenType;
@@ -385,9 +385,10 @@ export function parseMarkdown(markdown: string, isStreaming = true): ParsedMarkd
     // Handle code blocks
     if (CODE_BLOCK_PATTERN.test(trimmedLine)) {
       if (inCodeBlock) {
-        // End of code block
+        // End of code block - check if it's a mermaid diagram
+        const isMermaid = codeBlockLanguage.toLowerCase() === 'mermaid';
         tokens.push({
-          type: 'code-block',
+          type: isMermaid ? 'mermaid' : 'code-block',
           raw: codeBlockContent,
           content: codeBlockContent,
           metadata: { language: codeBlockLanguage },

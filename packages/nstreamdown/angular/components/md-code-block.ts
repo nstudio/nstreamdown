@@ -7,14 +7,6 @@ import { NativeScriptCommonModule } from '@nativescript/angular';
 import { isIOS, isAndroid } from '@nativescript/core';
 import { copyToClipboard } from '@nstudio/nstreamdown';
 
-// Declare iOS types available at runtime
-declare type UILabel = any;
-declare const SyntaxHighlighter: any;
-
-// Declare Android types
-declare const org: any;
-declare const android: any;
-
 @Component({
   selector: 'MdCodeBlock',
   template: `

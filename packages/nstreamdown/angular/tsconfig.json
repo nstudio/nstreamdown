@@ -3,5 +3,6 @@
   "compilerOptions": {
     "outDir": "../../../dist/out-tsc",
     "rootDirs": [".", "../.."]
-  }
+  },
+  "include": ["**/*.ts", "../references.d.ts"]
 }
