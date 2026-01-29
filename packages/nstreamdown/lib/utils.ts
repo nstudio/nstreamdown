@@ -4,21 +4,6 @@
 
 import { Color, Utils } from '@nativescript/core';
 
-// Declare iOS types that are available at runtime
-declare const UIFont: any;
-declare const UIColor: any;
-declare const UIPasteboard: any;
-declare const UIApplication: any;
-declare const NSURL: any;
-declare const NSMutableAttributedString: any;
-declare const NSMakeRange: any;
-declare const NSFontAttributeName: any;
-declare const NSForegroundColorAttributeName: any;
-declare const NSBackgroundColorAttributeName: any;
-declare const NSStrikethroughStyleAttributeName: any;
-declare const NSUnderlineStyleAttributeName: any;
-declare const NSUnderlineStyle: any;
-
 /**
  * Theme colors for streamdown components
  */
@@ -139,30 +124,30 @@ function createIOSAttributedString(text: string, attributes: Record<string, unkn
 
   if (attributes.bold) {
     const font = UIFont.boldSystemFontOfSize((attributes.fontSize as number) || 16);
-    attributedString.addAttributeValueRange(NSFontAttributeName, font, NSMakeRange(0, text.length));
+    attributedString.addAttributeValueRange(NSFontAttributeName, font, NSRangeFromString(`{0,${text.length}}`));
   }
 
   if (attributes.italic) {
     const font = UIFont.italicSystemFontOfSize((attributes.fontSize as number) || 16);
-    attributedString.addAttributeValueRange(NSFontAttributeName, font, NSMakeRange(0, text.length));
+    attributedString.addAttributeValueRange(NSFontAttributeName, font, NSRangeFromString(`{0,${text.length}}`));
   }
 
   if (attributes.color) {
     const color = UIColor.colorWithRedGreenBlueAlpha(((attributes.color as Color).r || 0) / 255, ((attributes.color as Color).g || 0) / 255, ((attributes.color as Color).b || 0) / 255, ((attributes.color as Color).a || 255) / 255);
-    attributedString.addAttributeValueRange(NSForegroundColorAttributeName, color, NSMakeRange(0, text.length));
+    attributedString.addAttributeValueRange(NSForegroundColorAttributeName, color, NSRangeFromString(`{0,${text.length}}`));
   }
 
   if (attributes.backgroundColor) {
     const bgColor = UIColor.colorWithRedGreenBlueAlpha(((attributes.backgroundColor as Color).r || 0) / 255, ((attributes.backgroundColor as Color).g || 0) / 255, ((attributes.backgroundColor as Color).b || 0) / 255, ((attributes.backgroundColor as Color).a || 255) / 255);
-    attributedString.addAttributeValueRange(NSBackgroundColorAttributeName, bgColor, NSMakeRange(0, text.length));
+    attributedString.addAttributeValueRange(NSBackgroundColorAttributeName, bgColor, NSRangeFromString(`{0,${text.length}}`));
   }
 
   if (attributes.strikethrough) {
-    attributedString.addAttributeValueRange(NSStrikethroughStyleAttributeName, NSUnderlineStyle.Single, NSMakeRange(0, text.length));
+    attributedString.addAttributeValueRange(NSStrikethroughStyleAttributeName, NSUnderlineStyle.Single, NSRangeFromString(`{0,${text.length}}`));
   }
 
   if (attributes.underline) {
-    attributedString.addAttributeValueRange(NSUnderlineStyleAttributeName, NSUnderlineStyle.Single, NSMakeRange(0, text.length));
+    attributedString.addAttributeValueRange(NSUnderlineStyleAttributeName, NSUnderlineStyle.Single, NSRangeFromString(`{0,${text.length}}`));
   }
 
   return attributedString;
