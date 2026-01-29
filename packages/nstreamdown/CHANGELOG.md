@@ -1,3 +1,13 @@
+## 1.0.3 (2026-01-29)
+
+### 🚀 Features
+
+- mermaid support ([82f2730](https://github.com/nstudio/nstreamdown/commit/82f2730))
+
+### ❤️ Thank You
+
+- Nathan Walker
+
 ## 1.0.2 (2026-01-20)
 
 ### 🚀 Features
