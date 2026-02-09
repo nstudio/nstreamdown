@@ -4,6 +4,7 @@ import { isIOS, WebView } from '@nativescript/core';
 import { 
   copyToClipboard, 
   generateMermaidHTML, 
+  RoundedOutlineProvider,
   configureIOSWebViewForMermaid, 
   configureAndroidWebViewForMermaid,
   loadMermaidIntoIOSWebView,
@@ -86,7 +87,7 @@ function onContainerLoaded(args: any) {
       const density = android.content.res.Resources.getSystem().getDisplayMetrics().density;
       const radiusPx = 12 * density;
       // @ts-ignore
-      const provider = new org.nativescript.streamdown.RoundedOutlineProvider(radiusPx);
+      const provider = new RoundedOutlineProvider(radiusPx);
       nativeView.setOutlineProvider(provider);
       nativeView.setClipToOutline(true);
     }
