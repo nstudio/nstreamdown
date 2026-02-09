@@ -87,9 +87,10 @@ function applyHighlighting() {
         const highlighter = org.nativescript.streamdown.SyntaxHighlighter.getShared();
         const scheme = org.nativescript.streamdown.SyntaxHighlighter.getDarkScheme();
 
-        // Reduce line spacing to match iOS
+        // Reduce line spacing to match iOS (1.0 = single spacing, no extra)
         androidLabel.setLineSpacing(0, 1.0);
 
+        // Use synchronous highlight for immediate display
         const spannableString = highlighter.highlight(props.code, props.language || 'typescript', scheme);
         if (spannableString) {
           androidLabel.setText(spannableString, android.widget.TextView.BufferType.SPANNABLE);
@@ -99,13 +100,9 @@ function applyHighlighting() {
     } catch (e) {
       console.log('[CodeBlock] Android Syntax highlighting error:', e);
     }
-    // Android fallback
-    codeLabel.value.text = props.code;
-    codeLabel.value.color = '#e2e8f0';
-    return;
   }
 
-  // Other platforms fallback
+  // Fallback - just set text
   codeLabel.value.text = props.code;
   codeLabel.value.color = '#e2e8f0';
 }
@@ -136,11 +133,13 @@ watch(() => props.language, () => {
     <GridLayout row="0" columns="*, auto" class="bg-slate-800 border-b border-slate-700 px-3 py-2">
       <Label col="0" :text="language || 'code'" class="text-xs text-slate-400 font-mono" />
       <Image 
+        v-if="isIOS"
         :src="copied ? 'sys://checkmark.circle' : 'sys://document.on.document'" 
         col="1" 
         class="w-4 h-4 text-blue-400" 
         @tap="onCopy" 
       />
+      <Label v-else col="1" :text="copied ? '✓' : '📋'" class="text-base text-blue-400 px-1 h-[18]" @tap="onCopy"></Label>
     </GridLayout>
 
     <!-- Code content with native syntax highlighting -->
