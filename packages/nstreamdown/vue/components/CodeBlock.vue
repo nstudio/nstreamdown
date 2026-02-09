@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import { ref, watch, onMounted } from 'vue';
-import { isIOS } from '@nativescript/core';
+import { isIOS, isAndroid } from '@nativescript/core';
 import { copyToClipboard } from '@nstudio/nstreamdown';
 
-// Declare iOS types available at runtime
+// Declare native types available at runtime
 declare const SyntaxHighlighter: any;
+declare const android: any;
+declare const org: any;
 
 interface Props {
   code: string;
@@ -22,6 +24,24 @@ const copied = ref(false);
 const codeLabel = ref<any>(null);
 let lastHighlightedCode = '';
 
+function onContainerLoaded(args: any) {
+  if (isAndroid) {
+    const view = args.object;
+    const nativeView = view.android;
+    if (nativeView) {
+      const context = nativeView.getContext();
+      const density = context.getResources().getDisplayMetrics().density;
+      const radiusPx = 12 * density;
+
+      const drawable = new android.graphics.drawable.GradientDrawable();
+      drawable.setCornerRadius(radiusPx);
+      drawable.setColor(android.graphics.Color.rgb(15, 23, 42)); // bg-slate-900
+      nativeView.setBackground(drawable);
+      nativeView.setClipToOutline(true);
+    }
+  }
+}
+
 function onCodeLabelLoaded(args: any) {
   codeLabel.value = args.object;
   applyHighlighting();
@@ -29,7 +49,7 @@ function onCodeLabelLoaded(args: any) {
 
 function applyHighlighting() {
   if (!codeLabel.value || !props.code) return;
-  
+
   // Skip if already highlighted this exact code
   if (lastHighlightedCode === props.code) return;
   lastHighlightedCode = props.code;
@@ -51,12 +71,43 @@ function applyHighlighting() {
         }
       }
     } catch (e) {
-      console.log('[CodeBlock] Syntax highlighting error:', e);
+      console.log('[CodeBlock] iOS Syntax highlighting error:', e);
     }
+    // iOS fallback
+    codeLabel.value.text = props.code;
+    codeLabel.value.color = '#e2e8f0';
+    return;
   }
 
-  // Fallback - just set text
+  // Android - use native Kotlin syntax highlighter
+  if (isAndroid) {
+    try {
+      const androidLabel = codeLabel.value.android;
+      if (androidLabel && typeof org !== 'undefined' && org.nativescript?.streamdown?.SyntaxHighlighter) {
+        const highlighter = org.nativescript.streamdown.SyntaxHighlighter.getShared();
+        const scheme = org.nativescript.streamdown.SyntaxHighlighter.getDarkScheme();
+
+        // Reduce line spacing to match iOS
+        androidLabel.setLineSpacing(0, 1.0);
+
+        const spannableString = highlighter.highlight(props.code, props.language || 'typescript', scheme);
+        if (spannableString) {
+          androidLabel.setText(spannableString, android.widget.TextView.BufferType.SPANNABLE);
+          return;
+        }
+      }
+    } catch (e) {
+      console.log('[CodeBlock] Android Syntax highlighting error:', e);
+    }
+    // Android fallback
+    codeLabel.value.text = props.code;
+    codeLabel.value.color = '#e2e8f0';
+    return;
+  }
+
+  // Other platforms fallback
   codeLabel.value.text = props.code;
+  codeLabel.value.color = '#e2e8f0';
 }
 
 function onCopy() {
@@ -80,7 +131,7 @@ watch(() => props.language, () => {
 </script>
 
 <template>
-  <GridLayout class="rounded-xl border border-slate-700 bg-slate-900 my-3 overflow-hidden" rows="auto, auto">
+  <GridLayout class="rounded-xl border border-slate-700 bg-slate-900 my-3 overflow-hidden" rows="auto, auto" @loaded="onContainerLoaded">
     <!-- Header with language and copy button -->
     <GridLayout row="0" columns="*, auto" class="bg-slate-800 border-b border-slate-700 px-3 py-2">
       <Label col="0" :text="language || 'code'" class="text-xs text-slate-400 font-mono" />

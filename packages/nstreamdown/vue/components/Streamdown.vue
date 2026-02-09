@@ -289,7 +289,7 @@ function onLinkTap(token: MarkdownToken) {
 
       <!-- Mermaid diagrams -->
       <MdMermaid
-        v-else-if="token.type === 'mermaid-block'"
+        v-else-if="token.type === 'mermaid'"
         :content="token.content"
         :darkMode="true"
         :isIncomplete="getIsIncomplete(token)"

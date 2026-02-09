@@ -9,7 +9,7 @@ const emit = defineEmits<{
 // Sample AI response that demonstrates all markdown features
 const DEMO_MARKDOWN = `# NativeScript Streamdown 🚀
 
-This is a **native iOS** implementation of [streamdown.ai](https://streamdown.ai), designed for real-time AI streaming content.
+This is a **native** implementation of [streamdown.ai](https://streamdown.ai), designed for real-time AI streaming content.
 
 ## Key Features
 
@@ -51,12 +51,15 @@ class ViewController: UIViewController {
 
 ## Tables
 
-| Feature | Streamdown | React Markdown |
+| Hobby | Jack | Jill |
 |---------|------------|----------------|
-| Streaming | ✅ Yes | ❌ No |
-| Incomplete Tokens | ✅ Handles | ❌ Breaks |
-| Native iOS | ✅ Yes | ❌ Web Only |
-| Performance | ⚡ Fast | 🐢 Slower |
+| Running | ✅ Yes | ❌ No |
+| Cooking | ❌ No | ✅ Yes |
+| Driving | ✅ Yes | ✅ Yes |
+
+## Images
+
+![This could be your backyard](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTi-O9OCjpI-7q-D_7cRbQ1AYOO-SBSbNi3zw&s)
 
 ## Blockquotes
 
@@ -72,6 +75,32 @@ x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}
 $$
 
 And inline math like $E = mc^2$ works too!
+
+## Mermaid Diagrams
+
+Streamdown supports interactive Mermaid diagrams:
+
+\`\`\`mermaid
+flowchart TD
+    A[Start] --> B{Is it working?}
+    B -->|Yes| C[Great!]
+    B -->|No| D[Debug]
+    D --> B
+    C --> E[Ship it! 🚀]
+\`\`\`
+
+\`\`\`mermaid
+sequenceDiagram
+    participant App
+    participant API
+    participant DB
+
+    App->>API: POST /chat
+    API->>DB: Store message
+    DB-->>API: OK
+    API-->>App: Stream response
+    Note over App,API: Real-time streaming
+\`\`\`
 
 ## Lists
 
@@ -98,11 +127,13 @@ Streamdown supports GFM features like:
 
 ## CJK Language Support
 
-日本語、中文、한국어 are fully supported with proper emphasis handling.
+**日本語、中文、한국어** are fully supported with proper emphasis handling.
+
+~~日本語、中文、한국어~~ or with strikethrough handling.
 
 ---
 
-*Powered by NativeScript and rendered natively on iOS ✨*`;
+*Powered by NativeScript and rendered natively ✨*`;
 
 // Simulated streaming chunks
 const STREAMING_CHUNKS = DEMO_MARKDOWN.split(/(?<=\s)/);

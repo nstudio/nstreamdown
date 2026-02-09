@@ -1,15 +1,17 @@
 <script lang="ts" setup>
-import { ref, computed, watch, onUnmounted } from 'vue';
+import { ref, computed, watch, onUnmounted, getCurrentInstance } from 'vue';
 import { isIOS, WebView } from '@nativescript/core';
-import { 
-  copyToClipboard, 
-  generateMermaidHTML, 
-  configureIOSWebViewForMermaid, 
+import {
+  copyToClipboard,
+  generateMermaidHTML,
+  configureIOSWebViewForMermaid,
   configureAndroidWebViewForMermaid,
   loadMermaidIntoIOSWebView,
   loadMermaidIntoAndroidWebView,
-  WKScriptMessageHandlerImpl
+  WKScriptMessageHandlerImpl,
+  RoundedOutlineProvider
 } from '@nstudio/nstreamdown';
+import MdMermaidFullscreen from './MdMermaidFullscreen.vue';
 
 interface Props {
   content: string;
@@ -85,9 +87,7 @@ function onContainerLoaded(args: any) {
     if (nativeView) {
       const density = android.content.res.Resources.getSystem().getDisplayMetrics().density;
       const radiusPx = 12 * density;
-      // @ts-ignore
-      const provider = new org.nativescript.streamdown.RoundedOutlineProvider(radiusPx);
-      nativeView.setOutlineProvider(provider);
+      nativeView.setOutlineProvider(new RoundedOutlineProvider(radiusPx));
       nativeView.setClipToOutline(true);
     }
   }
@@ -171,9 +171,23 @@ function onCopy() {
   }
 }
 
+const instance = getCurrentInstance();
+
 function onToggleFullscreen() {
-  fullscreen.value = !fullscreen.value;
-  // TODO: Implement fullscreen modal for Vue
+  fullscreen.value = true;
+  const showModal = instance?.proxy?.$showModal as any;
+  if (showModal) {
+    showModal(MdMermaidFullscreen, {
+      fullscreen: true,
+      props: {
+        content: props.content,
+        darkMode: props.darkMode
+      },
+      closeCallback: () => {
+        fullscreen.value = false;
+      }
+    });
+  }
 }
 </script>
 
