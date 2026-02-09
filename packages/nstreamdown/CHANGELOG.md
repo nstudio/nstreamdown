@@ -1,3 +1,18 @@
+## 1.0.4 (2026-02-09)
+
+### 🚀 Features
+
+- **vue:** improve mermaid with fullscreen modal handling ([02ebc67](https://github.com/nstudio/nstreamdown/commit/02ebc67))
+
+### 🩹 Fixes
+
+- **vue:** mermaid and code block handling ([#1](https://github.com/nstudio/nstreamdown/issues/1))
+
+### ❤️ Thank You
+
+- Arthur @ArthurMJ96
+- Nathan Walker
+
 ## 1.0.3 (2026-01-29)
 
 ### 🚀 Features
