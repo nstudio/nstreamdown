@@ -205,34 +205,38 @@ function onToggleFullscreen() {
     >
       <Label col="0" text="◇ Mermaid" class="text-xs text-purple-600 dark:text-purple-400 font-medium" />
       <Label col="1" />
-      <Image 
+      <Image
         v-if="isIOS"
-        :src="fullscreen ? 'sys://arrow.down.right.and.arrow.up.left' : 'sys://arrow.up.left.and.arrow.down.right'" 
-        col="2" 
-        class="w-4 h-4 text-purple-400 mr-2" 
-        @tap="onToggleFullscreen" 
+        :src="fullscreen ? 'sys://arrow.down.right.and.arrow.up.left' : 'sys://arrow.up.left.and.arrow.down.right'"
+        col="2"
+        class="w-4 h-4 text-purple-400 mr-2"
+        ignoreTouchAnimation="true"
+        @tap="onToggleFullscreen"
       />
-      <Label 
-        v-else 
-        col="2" 
-        :text="fullscreen ? '⤢' : '⤡'" 
-        class="text-base text-purple-400 px-1 h-[18]" 
-        translateY="-6" 
-        @tap="onToggleFullscreen" 
+      <Label
+        v-else
+        col="2"
+        :text="fullscreen ? '⤢' : '⤡'"
+        class="text-base text-purple-400 px-1 h-[18]"
+        translateY="-6"
+        ignoreTouchAnimation="true"
+        @tap="onToggleFullscreen"
       />
-      <Image 
+      <Image
         v-if="isIOS"
-        :src="copied ? 'sys://checkmark.circle' : 'sys://document.on.document'" 
-        col="3" 
-        class="w-4 h-4 text-purple-400" 
-        @tap="onCopy" 
+        :src="copied ? 'sys://checkmark.circle' : 'sys://document.on.document'"
+        col="3"
+        class="w-4 h-4 text-purple-400"
+        ignoreTouchAnimation="true"
+        @tap="onCopy"
       />
-      <Label 
-        v-else 
-        col="3" 
-        :text="copied ? '✓' : '📋'" 
-        class="text-base text-purple-400 px-1 h-[18]" 
-        @tap="onCopy" 
+      <Label
+        v-else
+        col="3"
+        :text="copied ? '✓' : '📋'"
+        class="text-base text-purple-400 px-1 h-[18]"
+        ignoreTouchAnimation="true"
+        @tap="onCopy"
       />
     </GridLayout>
 

@@ -12,7 +12,7 @@ import { copyToClipboard } from '@nstudio/nstreamdown';
   template: `
     <!-- Inline math -->
     @if (!block()) {
-      <Label [text]="renderedMath()" class="text-base text-blue-800 dark:text-blue-300 italic"></Label>
+      <Label [text]="renderedMath()" class="text-base text-blue-800 dark:text-blue-300 italic" [color]="color() || null"></Label>
     }
 
     <!-- Block math -->
@@ -22,7 +22,7 @@ import { copyToClipboard } from '@nstudio/nstreamdown';
         <GridLayout row="0" columns="auto, *, auto" class="bg-blue-50 dark:bg-blue-950 border-b border-blue-200 dark:border-blue-800 px-3 py-2">
           <Label col="0" text="∑ Math" class="text-xs text-blue-600 dark:text-blue-400 font-medium"></Label>
           <Label col="1"></Label>
-          <Button col="2" [text]="copied() ? '✓ Copied' : 'Copy LaTeX'" class="text-xs text-blue-600 dark:text-blue-400 bg-transparent px-2 py-1 h-[25]" (tap)="onCopy()"></Button>
+          <Button col="2" [text]="copied() ? '✓ Copied' : 'Copy LaTeX'" class="text-xs text-blue-600 dark:text-blue-400 bg-transparent px-2 py-1 h-[25]" ignoreTouchAnimation="true" (tap)="onCopy()"></Button>
         </GridLayout>
 
         <!-- Math content -->
@@ -39,6 +39,7 @@ import { copyToClipboard } from '@nstudio/nstreamdown';
 export class MdMath {
   content = input('');
   block = input(false);
+  color = input('');
 
   copied = signal(false);
 

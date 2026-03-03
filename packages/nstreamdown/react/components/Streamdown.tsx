@@ -17,6 +17,16 @@ export interface StreamdownConfig {
   showCaret?: boolean;
   /** Custom caret character */
   caret?: string;
+  /** Override body text color for headings, paragraphs, lists, blockquotes (e.g. 'white', '#ffffff'). When not set, default theme colors apply. */
+  textColor?: string;
+  /** Override link text color (default: blue-600 / #2563eb) */
+  linkColor?: string;
+  /** Override inline code text color (default: pink-600 / #db2777) */
+  codeInlineColor?: string;
+  /** Override strikethrough text color (default: slate-400 / #94a3b8) */
+  strikethroughColor?: string;
+  /** Override inline math text color (default: blue-800 / #1e40af) */
+  mathInlineColor?: string;
 }
 
 export interface StreamdownProps {
@@ -44,6 +54,13 @@ export function Streamdown({
   const mode = config?.mode || 'streaming';
   const showCaret = config?.showCaret ?? true;
   const caretChar = config?.caret || '▋';
+
+  // Color overrides from config
+  const textColor = config?.textColor || undefined;
+  const linkColor = config?.linkColor || undefined;
+  const codeInlineColor = config?.codeInlineColor || undefined;
+  const strikethroughColor = config?.strikethroughColor || undefined;
+  const mathInlineColor = config?.mathInlineColor || undefined;
 
   // Parse tokens
   const parsedResult = useMemo(() => {
@@ -125,8 +142,9 @@ export function Streamdown({
         <label
           key={key}
           text={token.content}
-          className={`${getHeadingClass(getHeadingLevel(token))} text-slate-800 mb-2`}
+          className={`${getHeadingClass(getHeadingLevel(token))} ${textColor ? '' : 'text-slate-800'} mb-2`}
           textWrap={true}
+          color={textColor}
         />
       );
     }
@@ -139,6 +157,7 @@ export function Streamdown({
           text={token.content}
           className="text-base text-slate-700 mb-3 leading-6"
           textWrap={true}
+          color={textColor}
         />
       );
     }
@@ -170,6 +189,7 @@ export function Streamdown({
             text={token.content}
             className="text-base text-slate-600 italic"
             textWrap={true}
+            color={textColor}
           />
         </stackLayout>
       );
@@ -181,8 +201,8 @@ export function Streamdown({
         <stackLayout key={key} className="mb-3">
           {(token.children || []).map((item, itemIndex) => (
             <gridLayout key={itemIndex} columns="auto, *" className="mb-1">
-              <label col={0} text={`${itemIndex + 1}.`} className="text-slate-500 mr-2" />
-              <label col={1} text={item.content} className="text-slate-700" textWrap={true} />
+              <label col={0} text={`${itemIndex + 1}.`} className="text-slate-500 mr-2" color={textColor} />
+              <label col={1} text={item.content} className="text-slate-700" textWrap={true} color={textColor} />
             </gridLayout>
           ))}
         </stackLayout>
@@ -195,8 +215,8 @@ export function Streamdown({
         <stackLayout key={key} className="mb-3">
           {(token.children || []).map((item, itemIndex) => (
             <gridLayout key={itemIndex} columns="auto, *" className="mb-1">
-              <label col={0} text="•" className="text-slate-500 mr-2" />
-              <label col={1} text={item.content} className="text-slate-700" textWrap={true} />
+              <label col={0} text="•" className="text-slate-500 mr-2" color={textColor} />
+              <label col={1} text={item.content} className="text-slate-700" textWrap={true} color={textColor} />
             </gridLayout>
           ))}
         </stackLayout>

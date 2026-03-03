@@ -5,11 +5,14 @@ import { copyToClipboard } from '@nstudio/nstreamdown';
 interface Props {
   content: string;
   block?: boolean;
+  /** Override inline math text color (only applies to inline rendering) */
+  color?: string | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   content: '',
-  block: false
+  block: false,
+  color: null
 });
 
 const copied = ref(false);
@@ -303,6 +306,7 @@ function onCopy() {
     v-if="!block"
     :text="renderedMath"
     class="text-base text-blue-800 italic"
+    :color="color || null"
   />
 
   <!-- Block math -->
@@ -319,6 +323,7 @@ function onCopy() {
         col="2"
         :text="copied ? '✓ Copied' : 'Copy LaTeX'"
         class="text-xs text-blue-600"
+        ignoreTouchAnimation="true"
         @tap="onCopy"
       />
     </GridLayout>

@@ -107,6 +107,7 @@ function onLinkTap(token: MarkdownToken) {
         col="1"
         :text="copied ? '✓ Copied' : 'Copy'"
         class="text-xs text-blue-600 font-medium"
+        ignoreTouchAnimation="true"
         @tap="onCopy"
       />
     </GridLayout>
@@ -178,6 +179,7 @@ function onLinkTap(token: MarkdownToken) {
                   :text="token.content"
                   class="text-xs text-blue-600"
                   textDecoration="underline"
+                  ignoreTouchAnimation="true"
                   @tap="onLinkTap(token)"
                 />
                 <Label

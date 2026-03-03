@@ -16,6 +16,16 @@ export interface StreamdownConfig {
   showCaret?: boolean;
   /** Custom caret character */
   caret?: string;
+  /** Override body text color for headings, paragraphs, lists, blockquotes (e.g. 'white', '#ffffff'). When not set, default theme colors apply. */
+  textColor?: string;
+  /** Override link text color (default: blue-600 / #2563eb) */
+  linkColor?: string;
+  /** Override inline code text color (default: pink-600 / #db2777) */
+  codeInlineColor?: string;
+  /** Override strikethrough text color (default: slate-400 / #94a3b8) */
+  strikethroughColor?: string;
+  /** Override inline math text color (default: blue-800 / #1e40af) */
+  mathInlineColor?: string;
 }
 
 interface Props {
@@ -134,6 +144,13 @@ function getInlineTokens(content: string, children?: MarkdownToken[]): MarkdownT
   return [];
 }
 
+// Color overrides from config - null means use CSS defaults
+const textColorOverride = computed(() => props.config?.textColor || null);
+const linkColorOverride = computed(() => props.config?.linkColor || null);
+const codeInlineColorOverride = computed(() => props.config?.codeInlineColor || null);
+const strikethroughColorOverride = computed(() => props.config?.strikethroughColor || null);
+const mathInlineColorOverride = computed(() => props.config?.mathInlineColor || null);
+
 // Handle link taps
 function onLinkTap(token: MarkdownToken) {
   const url = token.metadata?.['url'] as string;
@@ -148,19 +165,20 @@ function onLinkTap(token: MarkdownToken) {
   <StackLayout class="streamdown-container">
     <template v-for="(token, index) in tokens" :key="`${index}-${token.type}-${token.content?.length || 0}`">
       <!-- Headings -->
-      <FlexboxLayout 
+      <FlexboxLayout
         v-if="isHeading(token)"
         flexWrap="wrap"
         alignItems="center"
-        :class="getHeadingClass(getHeadingLevel(token)) + ' text-slate-800 mb-2'"
+        :color="textColorOverride"
+        :class="getHeadingClass(getHeadingLevel(token)) + (textColorOverride ? '' : ' text-slate-800') + ' mb-2'"
       >
         <template v-for="(inlineToken, inlineIndex) in getInlineTokens(token.content, token.children)" :key="inlineIndex">
-          <Label v-if="inlineToken.type === 'text'" :text="inlineToken.content" textWrap="true" />
-          <Label v-else-if="inlineToken.type === 'bold'" :text="inlineToken.content" class="font-bold" textWrap="true" />
-          <Label v-else-if="inlineToken.type === 'italic'" :text="inlineToken.content" class="italic" textWrap="true" />
-          <Label v-else-if="inlineToken.type === 'bold-italic'" :text="inlineToken.content" class="font-bold italic" textWrap="true" />
-          <Label v-else-if="inlineToken.type === 'code-inline'" :text="inlineToken.content" class="font-mono bg-slate-100 text-pink-600 rounded px-1" textWrap="true" />
-          <Label v-else-if="inlineToken.type === 'link'" :text="inlineToken.content" class="text-blue-600 underline" textWrap="true" @tap="onLinkTap(inlineToken)" />
+          <Label v-if="inlineToken.type === 'text'" :text="inlineToken.content" :color="textColorOverride" textWrap="true" />
+          <Label v-else-if="inlineToken.type === 'bold'" :text="inlineToken.content" :color="textColorOverride" class="font-bold" textWrap="true" />
+          <Label v-else-if="inlineToken.type === 'italic'" :text="inlineToken.content" :color="textColorOverride" class="italic" textWrap="true" />
+          <Label v-else-if="inlineToken.type === 'bold-italic'" :text="inlineToken.content" :color="textColorOverride" class="font-bold italic" textWrap="true" />
+          <Label v-else-if="inlineToken.type === 'code-inline'" :text="inlineToken.content" class="font-mono bg-slate-100 text-pink-600 rounded px-1" :color="codeInlineColorOverride" textWrap="true" />
+          <Label v-else-if="inlineToken.type === 'link'" :text="inlineToken.content" class="text-blue-600 underline" :color="linkColorOverride" textWrap="true" ignoreTouchAnimation="true" @tap="onLinkTap(inlineToken)" />
           <Label v-else :text="inlineToken.content" textWrap="true" />
         </template>
       </FlexboxLayout>
@@ -173,15 +191,15 @@ function onLinkTap(token: MarkdownToken) {
         class="mb-3"
       >
         <template v-for="(inlineToken, inlineIndex) in getInlineTokens(token.content, token.children)" :key="inlineIndex">
-          <Label v-if="inlineToken.type === 'text'" :text="inlineToken.content" class="text-sm text-slate-700 leading-6" textWrap="true" />
-          <Label v-else-if="inlineToken.type === 'bold'" :text="inlineToken.content" class="text-sm text-slate-800 font-bold leading-6" textWrap="true" />
-          <Label v-else-if="inlineToken.type === 'italic'" :text="inlineToken.content" class="text-sm text-slate-700 italic leading-6" textWrap="true" />
-          <Label v-else-if="inlineToken.type === 'bold-italic'" :text="inlineToken.content" class="text-sm text-slate-800 font-bold italic leading-6" textWrap="true" />
-          <Label v-else-if="inlineToken.type === 'strikethrough'" :text="inlineToken.content" class="text-sm text-slate-400 leading-6" textDecoration="line-through" textWrap="true" />
-          <Label v-else-if="inlineToken.type === 'code-inline'" :text="inlineToken.content" class="text-xs font-mono bg-slate-100 text-pink-600 rounded px-1" textWrap="true" />
-          <Label v-else-if="inlineToken.type === 'link'" :text="inlineToken.content" class="text-sm text-blue-600 leading-6 underline" textWrap="true" @tap="onLinkTap(inlineToken)" />
-          <MdMath v-else-if="inlineToken.type === 'math-inline'" :content="inlineToken.content" :block="false" />
-          <Label v-else :text="inlineToken.content" class="text-sm text-slate-700 leading-6" textWrap="true" />
+          <Label v-if="inlineToken.type === 'text'" :text="inlineToken.content" class="text-sm text-slate-700 leading-6" :color="textColorOverride" textWrap="true" />
+          <Label v-else-if="inlineToken.type === 'bold'" :text="inlineToken.content" class="text-sm text-slate-800 font-bold leading-6" :color="textColorOverride" textWrap="true" />
+          <Label v-else-if="inlineToken.type === 'italic'" :text="inlineToken.content" class="text-sm text-slate-700 italic leading-6" :color="textColorOverride" textWrap="true" />
+          <Label v-else-if="inlineToken.type === 'bold-italic'" :text="inlineToken.content" class="text-sm text-slate-800 font-bold italic leading-6" :color="textColorOverride" textWrap="true" />
+          <Label v-else-if="inlineToken.type === 'strikethrough'" :text="inlineToken.content" class="text-sm text-slate-400 leading-6" :color="strikethroughColorOverride" textDecoration="line-through" textWrap="true" />
+          <Label v-else-if="inlineToken.type === 'code-inline'" :text="inlineToken.content" class="text-xs font-mono bg-slate-100 text-pink-600 rounded px-1" :color="codeInlineColorOverride" textWrap="true" />
+          <Label v-else-if="inlineToken.type === 'link'" :text="inlineToken.content" class="text-sm text-blue-600 leading-6 underline" :color="linkColorOverride" textWrap="true" ignoreTouchAnimation="true" @tap="onLinkTap(inlineToken)" />
+          <MdMath v-else-if="inlineToken.type === 'math-inline'" :content="inlineToken.content" :block="false" :color="mathInlineColorOverride" />
+          <Label v-else :text="inlineToken.content" class="text-sm text-slate-700 leading-6" :color="textColorOverride" textWrap="true" />
         </template>
       </FlexboxLayout>
 
@@ -200,10 +218,10 @@ function onLinkTap(token: MarkdownToken) {
       >
         <FlexboxLayout flexWrap="wrap" alignItems="center">
           <template v-for="(inlineToken, inlineIndex) in getInlineTokens(token.content, token.children)" :key="inlineIndex">
-            <Label v-if="inlineToken.type === 'text'" :text="inlineToken.content" class="text-base text-slate-600 italic" textWrap="true" />
-            <Label v-else-if="inlineToken.type === 'bold'" :text="inlineToken.content" class="text-base text-slate-700 font-bold italic" textWrap="true" />
-            <Label v-else-if="inlineToken.type === 'link'" :text="inlineToken.content" class="text-base text-blue-600 italic underline" textWrap="true" @tap="onLinkTap(inlineToken)" />
-            <Label v-else :text="inlineToken.content" class="text-base text-slate-600 italic" textWrap="true" />
+            <Label v-if="inlineToken.type === 'text'" :text="inlineToken.content" class="text-base text-slate-600 italic" :color="textColorOverride" textWrap="true" />
+            <Label v-else-if="inlineToken.type === 'bold'" :text="inlineToken.content" class="text-base text-slate-700 font-bold italic" :color="textColorOverride" textWrap="true" />
+            <Label v-else-if="inlineToken.type === 'link'" :text="inlineToken.content" class="text-base text-blue-600 italic underline" :color="linkColorOverride" textWrap="true" ignoreTouchAnimation="true" @tap="onLinkTap(inlineToken)" />
+            <Label v-else :text="inlineToken.content" class="text-base text-slate-600 italic" :color="textColorOverride" textWrap="true" />
           </template>
         </FlexboxLayout>
       </StackLayout>
@@ -219,16 +237,16 @@ function onLinkTap(token: MarkdownToken) {
           columns="auto, *"
           class="mb-1"
         >
-          <Label col="0" :text="`${itemIndex + 1}.`" class="text-slate-500 mr-2" />
+          <Label col="0" :text="`${itemIndex + 1}.`" class="text-slate-500 mr-2" :color="textColorOverride" />
           <FlexboxLayout col="1" flexWrap="wrap" alignItems="center">
             <template v-for="(inlineToken, inlineIndex) in getInlineTokens(item.content, item.children)" :key="inlineIndex">
-              <Label v-if="inlineToken.type === 'text'" :text="inlineToken.content" class="text-sm text-slate-700" textWrap="true" />
-              <Label v-else-if="inlineToken.type === 'bold'" :text="inlineToken.content" class="text-sm text-slate-800 font-bold" textWrap="true" />
-              <Label v-else-if="inlineToken.type === 'italic'" :text="inlineToken.content" class="text-sm text-slate-700 italic" textWrap="true" />
-              <Label v-else-if="inlineToken.type === 'strikethrough'" :text="inlineToken.content" class="text-sm text-slate-400" textDecoration="line-through" textWrap="true" />
-              <Label v-else-if="inlineToken.type === 'code-inline'" :text="inlineToken.content" class="text-xs font-mono bg-slate-100 text-pink-600 rounded px-1" textWrap="true" />
-              <Label v-else-if="inlineToken.type === 'link'" :text="inlineToken.content" class="text-sm text-blue-600 underline" textWrap="true" @tap="onLinkTap(inlineToken)" />
-              <Label v-else :text="inlineToken.content" class="text-sm text-slate-700" textWrap="true" />
+              <Label v-if="inlineToken.type === 'text'" :text="inlineToken.content" class="text-sm text-slate-700" :color="textColorOverride" textWrap="true" />
+              <Label v-else-if="inlineToken.type === 'bold'" :text="inlineToken.content" class="text-sm text-slate-800 font-bold" :color="textColorOverride" textWrap="true" />
+              <Label v-else-if="inlineToken.type === 'italic'" :text="inlineToken.content" class="text-sm text-slate-700 italic" :color="textColorOverride" textWrap="true" />
+              <Label v-else-if="inlineToken.type === 'strikethrough'" :text="inlineToken.content" class="text-sm text-slate-400" :color="strikethroughColorOverride" textDecoration="line-through" textWrap="true" />
+              <Label v-else-if="inlineToken.type === 'code-inline'" :text="inlineToken.content" class="text-xs font-mono bg-slate-100 text-pink-600 rounded px-1" :color="codeInlineColorOverride" textWrap="true" />
+              <Label v-else-if="inlineToken.type === 'link'" :text="inlineToken.content" class="text-sm text-blue-600 underline" :color="linkColorOverride" textWrap="true" ignoreTouchAnimation="true" @tap="onLinkTap(inlineToken)" />
+              <Label v-else :text="inlineToken.content" class="text-sm text-slate-700" :color="textColorOverride" textWrap="true" />
             </template>
           </FlexboxLayout>
         </GridLayout>
@@ -245,16 +263,16 @@ function onLinkTap(token: MarkdownToken) {
           columns="auto, *"
           class="mb-1"
         >
-          <Label col="0" text="•" class="text-slate-500 mr-2" />
+          <Label col="0" text="•" class="text-slate-500 mr-2" :color="textColorOverride" />
           <FlexboxLayout col="1" flexWrap="wrap" alignItems="center">
             <template v-for="(inlineToken, inlineIndex) in getInlineTokens(item.content, item.children)" :key="inlineIndex">
-              <Label v-if="inlineToken.type === 'text'" :text="inlineToken.content" class="text-sm text-slate-700" textWrap="true" />
-              <Label v-else-if="inlineToken.type === 'bold'" :text="inlineToken.content" class="text-sm text-slate-800 font-bold" textWrap="true" />
-              <Label v-else-if="inlineToken.type === 'italic'" :text="inlineToken.content" class="text-sm text-slate-700 italic" textWrap="true" />
-              <Label v-else-if="inlineToken.type === 'strikethrough'" :text="inlineToken.content" class="text-sm text-slate-400" textDecoration="line-through" textWrap="true" />
-              <Label v-else-if="inlineToken.type === 'code-inline'" :text="inlineToken.content" class="text-xs font-mono bg-slate-100 text-pink-600 rounded px-1" textWrap="true" />
-              <Label v-else-if="inlineToken.type === 'link'" :text="inlineToken.content" class="text-sm text-blue-600 underline" textWrap="true" @tap="onLinkTap(inlineToken)" />
-              <Label v-else :text="inlineToken.content" class="text-sm text-slate-700" textWrap="true" />
+              <Label v-if="inlineToken.type === 'text'" :text="inlineToken.content" class="text-sm text-slate-700" :color="textColorOverride" textWrap="true" />
+              <Label v-else-if="inlineToken.type === 'bold'" :text="inlineToken.content" class="text-sm text-slate-800 font-bold" :color="textColorOverride" textWrap="true" />
+              <Label v-else-if="inlineToken.type === 'italic'" :text="inlineToken.content" class="text-sm text-slate-700 italic" :color="textColorOverride" textWrap="true" />
+              <Label v-else-if="inlineToken.type === 'strikethrough'" :text="inlineToken.content" class="text-sm text-slate-400" :color="strikethroughColorOverride" textDecoration="line-through" textWrap="true" />
+              <Label v-else-if="inlineToken.type === 'code-inline'" :text="inlineToken.content" class="text-xs font-mono bg-slate-100 text-pink-600 rounded px-1" :color="codeInlineColorOverride" textWrap="true" />
+              <Label v-else-if="inlineToken.type === 'link'" :text="inlineToken.content" class="text-sm text-blue-600 underline" :color="linkColorOverride" textWrap="true" ignoreTouchAnimation="true" @tap="onLinkTap(inlineToken)" />
+              <Label v-else :text="inlineToken.content" class="text-sm text-slate-700" :color="textColorOverride" textWrap="true" />
             </template>
           </FlexboxLayout>
         </GridLayout>

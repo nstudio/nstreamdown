@@ -38,6 +38,24 @@ export interface StreamdownConfig {
   showCaret?: boolean;
   /** Custom caret character */
   caret?: string;
+  /** Override body text color for headings, paragraphs, lists, blockquotes (e.g. 'white', '#ffffff'). When not set, default theme colors apply. */
+  textColor?: string;
+  /** Override link text color (default: blue-600 / #2563eb) */
+  linkColor?: string;
+  /** Override inline code text color (default: pink-600 / #db2777) */
+  codeInlineColor?: string;
+  /** Override strikethrough text color (default: slate-400 / #94a3b8) */
+  strikethroughColor?: string;
+  /** Override inline math text color (default: purple-700 / #7c3aed) */
+  mathInlineColor?: string;
+}
+
+export interface StyleColors {
+  text: string | null;
+  link: string | null;
+  codeInline: string | null;
+  strikethrough: string | null;
+  mathInline: string | null;
 }
 
 @Component({
@@ -47,12 +65,12 @@ export interface StreamdownConfig {
       @for (token of tokens(); track trackToken($index, token)) {
         <!-- Headings -->
         @if (isHeading(token)) {
-          <MdHeading [level]="getHeadingLevel(token)" [content]="token.content" [children]="token.children || []"></MdHeading>
+          <MdHeading [level]="getHeadingLevel(token)" [content]="token.content" [children]="token.children || []" [styleColors]="styleColors()"></MdHeading>
         }
 
         <!-- Paragraphs -->
         @if (token.type === 'paragraph') {
-          <MdParagraph [content]="token.content" [children]="token.children || []"></MdParagraph>
+          <MdParagraph [content]="token.content" [children]="token.children || []" [styleColors]="styleColors()"></MdParagraph>
         }
 
         <!-- Code blocks -->
@@ -62,17 +80,17 @@ export interface StreamdownConfig {
 
         <!-- Blockquotes -->
         @if (token.type === 'blockquote') {
-          <MdBlockquote [content]="token.content" [children]="token.children || []"></MdBlockquote>
+          <MdBlockquote [content]="token.content" [children]="token.children || []" [styleColors]="styleColors()"></MdBlockquote>
         }
 
         <!-- Ordered lists -->
         @if (token.type === 'list-ordered') {
-          <MdList [ordered]="true" [items]="token.children || []"></MdList>
+          <MdList [ordered]="true" [items]="token.children || []" [styleColors]="styleColors()"></MdList>
         }
 
         <!-- Unordered lists -->
         @if (token.type === 'list-unordered') {
-          <MdList [ordered]="false" [items]="token.children || []"></MdList>
+          <MdList [ordered]="false" [items]="token.children || []" [styleColors]="styleColors()"></MdList>
         }
 
         <!-- Tables -->
@@ -152,6 +170,15 @@ export class Streamdown implements OnDestroy {
   mode = computed(() => this.config().mode || 'streaming');
   showCaret = computed(() => this.config().showCaret ?? true);
   caretChar = computed(() => this.config().caret || '▋');
+
+  // Computed style colors from config
+  styleColors = computed<StyleColors>(() => ({
+    text: this.config().textColor || null,
+    link: this.config().linkColor || null,
+    codeInline: this.config().codeInlineColor || null,
+    strikethrough: this.config().strikethroughColor || null,
+    mathInline: this.config().mathInlineColor || null,
+  }));
 
   isStreaming = computed(() => this.mode() === 'streaming' && !this._isComplete());
 

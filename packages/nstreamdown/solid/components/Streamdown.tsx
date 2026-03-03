@@ -162,6 +162,16 @@ export interface StreamdownConfig {
   showCaret?: boolean;
   /** Custom caret character */
   caret?: string;
+  /** Override body text color for headings, paragraphs, lists, blockquotes (e.g. 'white', '#ffffff'). When not set, default theme colors apply. */
+  textColor?: string;
+  /** Override link text color (default: blue-600 / #2563eb) */
+  linkColor?: string;
+  /** Override inline code text color (default: pink-600 / #db2777) */
+  codeInlineColor?: string;
+  /** Override strikethrough text color (default: slate-400 / #94a3b8) */
+  strikethroughColor?: string;
+  /** Override inline math text color (default: blue-800 / #1e40af) */
+  mathInlineColor?: string;
 }
 
 export interface StreamdownProps {
@@ -183,6 +193,13 @@ export function Streamdown(props: StreamdownProps): JSX.Element {
   const mode = () => props.config?.mode || 'streaming';
   const showCaret = () => props.config?.showCaret ?? true;
   const caretChar = () => props.config?.caret || '▋';
+
+  // Color overrides from config
+  const textColor = () => props.config?.textColor || undefined;
+  const linkColor = () => props.config?.linkColor || undefined;
+  const codeInlineColor = () => props.config?.codeInlineColor || undefined;
+  const strikethroughColor = () => props.config?.strikethroughColor || undefined;
+  const mathInlineColor = () => props.config?.mathInlineColor || undefined;
 
   // Parsed result
   const parsedResult = createMemo(() => {
@@ -448,7 +465,7 @@ export function Streamdown(props: StreamdownProps): JSX.Element {
   // Render inline span based on type (with checked state support)
   const renderSpan = (child: MarkdownToken, isCheckedItem: boolean = false) => {
     const checkedClass = isCheckedItem ? 'text-slate-400 dark:text-slate-500' : '';
-    
+
     switch (child.type) {
       case 'bold':
         return <span text={child.content} class={`font-bold ${checkedClass}`} />;
@@ -457,13 +474,13 @@ export function Streamdown(props: StreamdownProps): JSX.Element {
       case 'bold-italic':
         return <span text={child.content} class={`font-bold italic ${checkedClass}`} />;
       case 'code-inline':
-        return <span text={child.content} class="font-mono bg-slate-100 dark:bg-slate-700 text-pink-600 dark:text-pink-400" />;
+        return <span text={child.content} class="font-mono bg-slate-100 dark:bg-slate-700 text-pink-600 dark:text-pink-400" color={codeInlineColor()} />;
       case 'strikethrough':
-        return <span text={child.content} class="text-slate-400 dark:text-slate-500" textDecoration="line-through" />;
+        return <span text={child.content} class="text-slate-400 dark:text-slate-500" color={strikethroughColor()} textDecoration="line-through" />;
       case 'link':
-        return <span text={child.content} class="text-blue-600 dark:text-blue-400 underline" />;
+        return <span text={child.content} class="text-blue-600 dark:text-blue-400 underline" color={linkColor()} />;
       case 'math-inline':
-        return <span text={latexToUnicode(child.content)} class="text-blue-800 dark:text-blue-300 italic" />;
+        return <span text={latexToUnicode(child.content)} class="text-blue-800 dark:text-blue-300 italic" color={mathInlineColor()} />;
       default:
         return <span text={child.content} class={checkedClass} />;
     }
@@ -477,8 +494,9 @@ export function Streamdown(props: StreamdownProps): JSX.Element {
             {/* Headings */}
             <Match when={isHeading(token)}>
               <label
-                class={`${getHeadingClass(getHeadingLevel(token))} text-slate-800 mb-2 leading-[3]`}
+                class={`${getHeadingClass(getHeadingLevel(token))} ${textColor() ? '' : 'text-slate-800'} mb-2 leading-[3]`}
                 textWrap={true}
+                color={textColor()}
               >
                 <formattedstring>
                   <For each={getInlineChildren(token)}>
@@ -493,6 +511,7 @@ export function Streamdown(props: StreamdownProps): JSX.Element {
               <label
                 class="text-base text-slate-700 mb-3 leading-[3]"
                 textWrap={true}
+                color={textColor()}
               >
                 <formattedstring>
                   <For each={getInlineChildren(token)}>
@@ -513,6 +532,7 @@ export function Streamdown(props: StreamdownProps): JSX.Element {
                 <label
                   class="text-base text-slate-600 italic leading-[3]"
                   textWrap={true}
+                  color={textColor()}
                 >
                   <formattedstring>
                     <For each={getInlineChildren(token)}>
@@ -531,7 +551,7 @@ export function Streamdown(props: StreamdownProps): JSX.Element {
                     <gridlayout columns={isTaskItem(item) ? 'auto, auto, *' : 'auto, *'} class="py-0.5">
                       {/* Bullet or number (not shown for task items) */}
                       <Show when={!isTaskItem(item)}>
-                        <label col="0" text={getBullet(itemIndex(), item, true)} class="text-sm text-slate-500 dark:text-slate-400 pr-2 w-6 leading-[3]" />
+                        <label col="0" text={getBullet(itemIndex(), item, true)} class="text-sm text-slate-500 dark:text-slate-400 pr-2 w-6 leading-[3]" color={textColor()} />
                       </Show>
                       {/* Checkbox for task items */}
                       <Show when={isTaskItem(item)}>
@@ -543,7 +563,7 @@ export function Streamdown(props: StreamdownProps): JSX.Element {
                       <flexboxlayout col={isTaskItem(item) ? 1 : 1} flexWrap="wrap" alignItems="center">
                         <For each={getInlineChildren(item)}>
                           {(child) => (
-                            <label class={`text-sm leading-[3] ${isChecked(item) ? 'text-slate-400 dark:text-slate-500' : 'text-slate-700 dark:text-slate-300'}`} textWrap={true}>
+                            <label class={`text-sm leading-[3] ${isChecked(item) ? 'text-slate-400 dark:text-slate-500' : 'text-slate-700 dark:text-slate-300'}`} textWrap={true} color={textColor()}>
                               <formattedstring>
                                 {renderSpan(child, isChecked(item))}
                               </formattedstring>
@@ -565,7 +585,7 @@ export function Streamdown(props: StreamdownProps): JSX.Element {
                     <gridlayout columns={isTaskItem(item) ? 'auto, auto, *' : 'auto, *'} class="py-0.5">
                       {/* Bullet (not shown for task items) */}
                       <Show when={!isTaskItem(item)}>
-                        <label col="0" text={getBullet(itemIndex(), item, false)} class="text-sm text-slate-500 dark:text-slate-400 pr-2 w-6 leading-[3]" />
+                        <label col="0" text={getBullet(itemIndex(), item, false)} class="text-sm text-slate-500 dark:text-slate-400 pr-2 w-6 leading-[3]" color={textColor()} />
                       </Show>
                       {/* Checkbox for task items */}
                       <Show when={isTaskItem(item)}>
@@ -577,7 +597,7 @@ export function Streamdown(props: StreamdownProps): JSX.Element {
                       <flexboxlayout col={isTaskItem(item) ? 1 : 1} flexWrap="wrap" alignItems="center">
                         <For each={getInlineChildren(item)}>
                           {(child) => (
-                            <label class={`text-sm leading-[3] ${isChecked(item) ? 'text-slate-400 dark:text-slate-500' : 'text-slate-700 dark:text-slate-300'}`} textWrap={true}>
+                            <label class={`text-sm leading-[3] ${isChecked(item) ? 'text-slate-400 dark:text-slate-500' : 'text-slate-700 dark:text-slate-300'}`} textWrap={true} color={textColor()}>
                               <formattedstring>
                                 {renderSpan(child, isChecked(item))}
                               </formattedstring>

@@ -6,6 +6,7 @@ import { Component, NO_ERRORS_SCHEMA, ChangeDetectionStrategy, input } from '@an
 import { NativeScriptCommonModule } from '@nativescript/angular';
 import { MarkdownToken } from '@nstudio/nstreamdown';
 import { openUrl } from '@nstudio/nstreamdown';
+import type { StyleColors } from './streamdown';
 import { MdCheckbox } from './md-checkbox';
 
 @Component({
@@ -16,7 +17,7 @@ import { MdCheckbox } from './md-checkbox';
         <GridLayout [columns]="isTaskItem(item) ? 'auto, auto, *' : 'auto, *'" class="py-0.5">
           <!-- Bullet or number (not shown for task items) -->
           @if (!isTaskItem(item)) {
-            <Label col="0" [text]="getBullet(i, item)" class="text-sm text-slate-500 dark:text-slate-400 pr-2 w-6"></Label>
+            <Label col="0" [text]="getBullet(i, item)" class="text-sm text-slate-500 dark:text-slate-400 pr-2 w-6" [color]="styleColors().text"></Label>
           }
 
           <!-- Checkbox for task items -->
@@ -29,31 +30,31 @@ import { MdCheckbox } from './md-checkbox';
             @for (token of item.children || []; track $index) {
               @switch (token.type) {
                 @case ('text') {
-                  <Label [text]="token.content" [class]="'text-sm leading-[3] ' + (isChecked(item) ? 'text-slate-400 dark:text-slate-500' : 'text-slate-700 dark:text-slate-300')" textWrap="true"></Label>
+                  <Label [text]="token.content" [class]="'text-sm leading-[3] ' + (isChecked(item) ? 'text-slate-400 dark:text-slate-500' : 'text-slate-700 dark:text-slate-300')" [color]="styleColors().text" textWrap="true"></Label>
                 }
                 @case ('bold') {
-                  <Label [text]="token.content" [class]="'text-sm font-bold leading-[3] ' + (isChecked(item) ? 'text-slate-400 dark:text-slate-500' : 'text-slate-800 dark:text-slate-100')" textWrap="true"></Label>
+                  <Label [text]="token.content" [class]="'text-sm font-bold leading-[3] ' + (isChecked(item) ? 'text-slate-400 dark:text-slate-500' : 'text-slate-800 dark:text-slate-100')" [color]="styleColors().text" textWrap="true"></Label>
                 }
                 @case ('italic') {
-                  <Label [text]="token.content" [class]="'text-sm italic leading-[3] ' + (isChecked(item) ? 'text-slate-400 dark:text-slate-500' : 'text-slate-700 dark:text-slate-300')" textWrap="true"></Label>
+                  <Label [text]="token.content" [class]="'text-sm italic leading-[3] ' + (isChecked(item) ? 'text-slate-400 dark:text-slate-500' : 'text-slate-700 dark:text-slate-300')" [color]="styleColors().text" textWrap="true"></Label>
                 }
                 @case ('bold-italic') {
-                  <Label [text]="token.content" [class]="'text-sm font-bold italic leading-[3] ' + (isChecked(item) ? 'text-slate-400 dark:text-slate-500' : 'text-slate-800 dark:text-slate-100')" textWrap="true"></Label>
+                  <Label [text]="token.content" [class]="'text-sm font-bold italic leading-[3] ' + (isChecked(item) ? 'text-slate-400 dark:text-slate-500' : 'text-slate-800 dark:text-slate-100')" [color]="styleColors().text" textWrap="true"></Label>
                 }
                 @case ('strikethrough') {
-                  <Label [text]="token.content" class="text-sm text-slate-400 dark:text-slate-500 leading-[3]" textDecoration="line-through" textWrap="true"></Label>
+                  <Label [text]="token.content" class="text-sm text-slate-400 dark:text-slate-500 leading-[3]" [color]="styleColors().strikethrough" textDecoration="line-through" textWrap="true"></Label>
                 }
                 @case ('code-inline') {
-                  <Label [text]="token.content" class="text-xs font-mono bg-slate-100 dark:bg-slate-700 text-pink-600 dark:text-pink-400 rounded px-1" textWrap="true"></Label>
+                  <Label [text]="token.content" class="text-xs font-mono bg-slate-100 dark:bg-slate-700 text-pink-600 dark:text-pink-400 rounded px-1" [color]="styleColors().codeInline" textWrap="true"></Label>
                 }
                 @case ('link') {
-                  <Label [text]="token.content" class="text-sm text-blue-600 dark:text-blue-400 leading-[3]" textDecoration="underline" (tap)="onLinkTap(token)" textWrap="true"></Label>
+                  <Label [text]="token.content" class="text-sm text-blue-600 dark:text-blue-400 leading-[3]" [color]="styleColors().link" textDecoration="underline" ignoreTouchAnimation="true" (tap)="onLinkTap(token)" textWrap="true"></Label>
                 }
               }
             }
             <!-- Fallback if no children -->
             @if (!item.children || item.children.length === 0) {
-              <Label [text]="item.content" [class]="'text-sm leading-[3] ' + (isChecked(item) ? 'text-slate-400 dark:text-slate-500' : 'text-slate-700 dark:text-slate-300')" textWrap="true"></Label>
+              <Label [text]="item.content" [class]="'text-sm leading-[3] ' + (isChecked(item) ? 'text-slate-400 dark:text-slate-500' : 'text-slate-700 dark:text-slate-300')" [color]="styleColors().text" textWrap="true"></Label>
             }
           </FlexboxLayout>
         </GridLayout>
@@ -67,6 +68,7 @@ import { MdCheckbox } from './md-checkbox';
 export class MdList {
   ordered = input(false);
   items = input<MarkdownToken[]>([]);
+  styleColors = input<StyleColors>({ text: null, link: null, codeInline: null, strikethrough: null, mathInline: null });
 
   isTaskItem(item: MarkdownToken): boolean {
     return item.metadata?.['isTask'] === true;

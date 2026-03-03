@@ -265,7 +265,7 @@ export class StreamdownDemo implements OnInit, OnDestroy {
     if (this.scrollViewRef?.nativeElement) {
       const scrollView = this.scrollViewRef.nativeElement as ScrollView;
       setTimeout(() => {
-        scrollView.scrollToVerticalOffset(scrollView.scrollableHeight, false);
+        scrollView.scrollToVerticalOffset(scrollView.scrollableHeight, true);
       }, 10);
     }
   }
