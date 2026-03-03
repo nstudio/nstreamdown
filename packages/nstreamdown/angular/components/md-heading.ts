@@ -5,7 +5,7 @@
 import { Component, NO_ERRORS_SCHEMA, ChangeDetectionStrategy, computed, input } from '@angular/core';
 import { NativeScriptCommonModule } from '@nativescript/angular';
 import { MarkdownToken, parseInlineFormatting } from '@nstudio/nstreamdown';
-import type { StyleColors } from './streamdown';
+import type { StyleColors, StyleSpacing } from './streamdown';
 
 @Component({
   selector: 'MdHeading',
@@ -38,6 +38,7 @@ export class MdHeading {
   content = input('');
   children = input<MarkdownToken[]>([]);
   styleColors = input<StyleColors>({ text: null, link: null, codeInline: null, strikethrough: null, mathInline: null });
+  styleSpacing = input<StyleSpacing>({ paragraph: null, heading: null, list: null, blockquote: null, codeBlock: null, image: null, horizontalRule: null, table: null, mathBlock: null });
 
   displayTokens = computed(() => {
     const kids = this.children();
@@ -52,7 +53,8 @@ export class MdHeading {
 
   headingClass = computed(() => {
     const colorClass = this.styleColors().text ? '' : 'text-slate-800 dark:text-slate-100';
-    const baseClass = `font-bold ${colorClass} mt-4 mb-2 leading-[3]`;
+    const spacingClass = this.styleSpacing().heading || 'mt-4 mb-2';
+    const baseClass = `font-bold ${colorClass} ${spacingClass} leading-[3]`;
     const sizeClasses: Record<number, string> = {
       1: 'text-2xl',
       2: 'text-xl',

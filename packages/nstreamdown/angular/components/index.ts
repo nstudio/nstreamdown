@@ -6,7 +6,7 @@
 
 // Main component
 export { Streamdown } from './streamdown';
-export type { StreamdownConfig, StyleColors } from './streamdown';
+export type { StreamdownConfig, StyleColors, StyleSpacing } from './streamdown';
 
 // Markdown components
 export { MdHeading } from './md-heading';

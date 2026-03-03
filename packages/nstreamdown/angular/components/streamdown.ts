@@ -48,6 +48,24 @@ export interface StreamdownConfig {
   strikethroughColor?: string;
   /** Override inline math text color (default: purple-700 / #7c3aed) */
   mathInlineColor?: string;
+  /** Override paragraph spacing/wrapper class (default: 'mb-3') */
+  paragraphClass?: string;
+  /** Override heading spacing class (default: 'mt-4 mb-2') */
+  headingClass?: string;
+  /** Override list container class (default: 'my-2 pl-2') */
+  listClass?: string;
+  /** Override blockquote spacing class (default: 'my-3 pl-2') */
+  blockquoteClass?: string;
+  /** Override code block spacing class (default: 'mt-2 mb-3') */
+  codeBlockClass?: string;
+  /** Override image container class (default: 'my-3') */
+  imageClass?: string;
+  /** Override horizontal rule spacing class (default: 'my-4') */
+  horizontalRuleClass?: string;
+  /** Override table spacing class (default: 'my-3') */
+  tableClass?: string;
+  /** Override math block spacing class (default: 'my-3') */
+  mathBlockClass?: string;
 }
 
 export interface StyleColors {
@@ -58,6 +76,18 @@ export interface StyleColors {
   mathInline: string | null;
 }
 
+export interface StyleSpacing {
+  paragraph: string | null;
+  heading: string | null;
+  list: string | null;
+  blockquote: string | null;
+  codeBlock: string | null;
+  image: string | null;
+  horizontalRule: string | null;
+  table: string | null;
+  mathBlock: string | null;
+}
+
 @Component({
   selector: 'Streamdown',
   template: `
@@ -65,52 +95,52 @@ export interface StyleColors {
       @for (token of tokens(); track trackToken($index, token)) {
         <!-- Headings -->
         @if (isHeading(token)) {
-          <MdHeading [level]="getHeadingLevel(token)" [content]="token.content" [children]="token.children || []" [styleColors]="styleColors()"></MdHeading>
+          <MdHeading [level]="getHeadingLevel(token)" [content]="token.content" [children]="token.children || []" [styleColors]="styleColors()" [styleSpacing]="styleSpacing()"></MdHeading>
         }
 
         <!-- Paragraphs -->
         @if (token.type === 'paragraph') {
-          <MdParagraph [content]="token.content" [children]="token.children || []" [styleColors]="styleColors()"></MdParagraph>
+          <MdParagraph [content]="token.content" [children]="token.children || []" [styleColors]="styleColors()" [styleSpacing]="styleSpacing()"></MdParagraph>
         }
 
         <!-- Code blocks -->
         @if (token.type === 'code-block') {
-          <MdCodeBlock [code]="token.content" [language]="getLanguage(token)" [isIncomplete]="getIsIncomplete(token)"></MdCodeBlock>
+          <MdCodeBlock [code]="token.content" [language]="getLanguage(token)" [isIncomplete]="getIsIncomplete(token)" [styleSpacing]="styleSpacing()"></MdCodeBlock>
         }
 
         <!-- Blockquotes -->
         @if (token.type === 'blockquote') {
-          <MdBlockquote [content]="token.content" [children]="token.children || []" [styleColors]="styleColors()"></MdBlockquote>
+          <MdBlockquote [content]="token.content" [children]="token.children || []" [styleColors]="styleColors()" [styleSpacing]="styleSpacing()"></MdBlockquote>
         }
 
         <!-- Ordered lists -->
         @if (token.type === 'list-ordered') {
-          <MdList [ordered]="true" [items]="token.children || []" [styleColors]="styleColors()"></MdList>
+          <MdList [ordered]="true" [items]="token.children || []" [styleColors]="styleColors()" [styleSpacing]="styleSpacing()"></MdList>
         }
 
         <!-- Unordered lists -->
         @if (token.type === 'list-unordered') {
-          <MdList [ordered]="false" [items]="token.children || []" [styleColors]="styleColors()"></MdList>
+          <MdList [ordered]="false" [items]="token.children || []" [styleColors]="styleColors()" [styleSpacing]="styleSpacing()"></MdList>
         }
 
         <!-- Tables -->
         @if (token.type === 'table') {
-          <MdTable [rows]="token.children || []"></MdTable>
+          <MdTable [rows]="token.children || []" [styleSpacing]="styleSpacing()"></MdTable>
         }
 
         <!-- Images -->
         @if (token.type === 'image') {
-          <MdImage [src]="getUrl(token)" [alt]="token.content"></MdImage>
+          <MdImage [src]="getUrl(token)" [alt]="token.content" [styleSpacing]="styleSpacing()"></MdImage>
         }
 
         <!-- Horizontal rules -->
         @if (token.type === 'horizontal-rule') {
-          <MdHorizontalRule></MdHorizontalRule>
+          <MdHorizontalRule [styleSpacing]="styleSpacing()"></MdHorizontalRule>
         }
 
         <!-- Math blocks -->
         @if (token.type === 'math-block') {
-          <MdMath [content]="token.content" [block]="true"></MdMath>
+          <MdMath [content]="token.content" [block]="true" [styleSpacing]="styleSpacing()"></MdMath>
         }
 
         <!-- Mermaid diagrams -->
@@ -178,6 +208,19 @@ export class Streamdown implements OnDestroy {
     codeInline: this.config().codeInlineColor || null,
     strikethrough: this.config().strikethroughColor || null,
     mathInline: this.config().mathInlineColor || null,
+  }));
+
+  // Computed style spacing from config
+  styleSpacing = computed<StyleSpacing>(() => ({
+    paragraph: this.config().paragraphClass || null,
+    heading: this.config().headingClass || null,
+    list: this.config().listClass || null,
+    blockquote: this.config().blockquoteClass || null,
+    codeBlock: this.config().codeBlockClass || null,
+    image: this.config().imageClass || null,
+    horizontalRule: this.config().horizontalRuleClass || null,
+    table: this.config().tableClass || null,
+    mathBlock: this.config().mathBlockClass || null,
   }));
 
   isStreaming = computed(() => this.mode() === 'streaming' && !this._isComplete());

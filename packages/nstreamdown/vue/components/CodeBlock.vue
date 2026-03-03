@@ -12,12 +12,14 @@ interface Props {
   code: string;
   language?: string;
   isIncomplete?: boolean;
+  spacingClass?: string | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   code: '',
   language: '',
-  isIncomplete: false
+  isIncomplete: false,
+  spacingClass: null
 });
 
 const copied = ref(false);
@@ -128,7 +130,7 @@ watch(() => props.language, () => {
 </script>
 
 <template>
-  <GridLayout class="rounded-xl border border-slate-700 bg-slate-900 my-3 overflow-hidden" rows="auto, auto" @loaded="onContainerLoaded">
+  <GridLayout :class="'rounded-xl border border-slate-700 bg-slate-900 overflow-hidden ' + (spacingClass || 'my-3')" rows="auto, auto" @loaded="onContainerLoaded">
     <!-- Header with language and copy button -->
     <GridLayout row="0" columns="*, auto" class="bg-slate-800 border-b border-slate-700 px-3 py-2">
       <Label col="0" :text="language || 'code'" class="text-xs text-slate-400 font-mono" />

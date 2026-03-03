@@ -6,13 +6,13 @@ import { Component, NO_ERRORS_SCHEMA, ChangeDetectionStrategy, input } from '@an
 import { NativeScriptCommonModule } from '@nativescript/angular';
 import { MarkdownToken } from '@nstudio/nstreamdown';
 import { openUrl } from '@nstudio/nstreamdown';
-import type { StyleColors } from './streamdown';
+import type { StyleColors, StyleSpacing } from './streamdown';
 import { MdCheckbox } from './md-checkbox';
 
 @Component({
   selector: 'MdList',
   template: `
-    <StackLayout class="my-2 pl-2">
+    <StackLayout [class]="styleSpacing().list || 'my-2 pl-2'">
       @for (item of items(); track $index; let i = $index) {
         <GridLayout [columns]="isTaskItem(item) ? 'auto, auto, *' : 'auto, *'" class="py-0.5">
           <!-- Bullet or number (not shown for task items) -->
@@ -69,6 +69,7 @@ export class MdList {
   ordered = input(false);
   items = input<MarkdownToken[]>([]);
   styleColors = input<StyleColors>({ text: null, link: null, codeInline: null, strikethrough: null, mathInline: null });
+  styleSpacing = input<StyleSpacing>({ paragraph: null, heading: null, list: null, blockquote: null, codeBlock: null, image: null, horizontalRule: null, table: null, mathBlock: null });
 
   isTaskItem(item: MarkdownToken): boolean {
     return item.metadata?.['isTask'] === true;

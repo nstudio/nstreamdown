@@ -26,6 +26,24 @@ export interface StreamdownConfig {
   strikethroughColor?: string;
   /** Override inline math text color (default: blue-800 / #1e40af) */
   mathInlineColor?: string;
+  /** Override paragraph spacing/wrapper class (default: 'mb-3') */
+  paragraphClass?: string;
+  /** Override heading spacing class (default: 'mb-2') */
+  headingClass?: string;
+  /** Override list container class (default: 'mb-3') */
+  listClass?: string;
+  /** Override blockquote spacing class (default: 'border-l-4 border-slate-300 pl-4 mb-3') */
+  blockquoteClass?: string;
+  /** Override code block spacing class (default: 'my-3') */
+  codeBlockClass?: string;
+  /** Override image container class (default: 'mb-3') */
+  imageClass?: string;
+  /** Override horizontal rule spacing class (default: 'my-4') */
+  horizontalRuleClass?: string;
+  /** Override table spacing class (default: 'my-3') */
+  tableClass?: string;
+  /** Override math block spacing class (default: 'my-3') */
+  mathBlockClass?: string;
 }
 
 interface Props {
@@ -151,6 +169,17 @@ const codeInlineColorOverride = computed(() => props.config?.codeInlineColor || 
 const strikethroughColorOverride = computed(() => props.config?.strikethroughColor || null);
 const mathInlineColorOverride = computed(() => props.config?.mathInlineColor || null);
 
+// Spacing overrides from config - null means use default classes
+const paragraphSpacingOverride = computed(() => props.config?.paragraphClass || null);
+const headingSpacingOverride = computed(() => props.config?.headingClass || null);
+const listSpacingOverride = computed(() => props.config?.listClass || null);
+const blockquoteSpacingOverride = computed(() => props.config?.blockquoteClass || null);
+const codeBlockSpacingOverride = computed(() => props.config?.codeBlockClass || null);
+const imageSpacingOverride = computed(() => props.config?.imageClass || null);
+const horizontalRuleSpacingOverride = computed(() => props.config?.horizontalRuleClass || null);
+const tableSpacingOverride = computed(() => props.config?.tableClass || null);
+const mathBlockSpacingOverride = computed(() => props.config?.mathBlockClass || null);
+
 // Handle link taps
 function onLinkTap(token: MarkdownToken) {
   const url = token.metadata?.['url'] as string;
@@ -170,7 +199,7 @@ function onLinkTap(token: MarkdownToken) {
         flexWrap="wrap"
         alignItems="center"
         :color="textColorOverride"
-        :class="getHeadingClass(getHeadingLevel(token)) + (textColorOverride ? '' : ' text-slate-800') + ' mb-2'"
+        :class="getHeadingClass(getHeadingLevel(token)) + (textColorOverride ? '' : ' text-slate-800') + ' ' + (headingSpacingOverride || 'mb-2')"
       >
         <template v-for="(inlineToken, inlineIndex) in getInlineTokens(token.content, token.children)" :key="inlineIndex">
           <Label v-if="inlineToken.type === 'text'" :text="inlineToken.content" :color="textColorOverride" textWrap="true" />
@@ -188,7 +217,7 @@ function onLinkTap(token: MarkdownToken) {
         v-else-if="token.type === 'paragraph'"
         flexWrap="wrap"
         alignItems="center"
-        class="mb-3"
+        :class="paragraphSpacingOverride || 'mb-3'"
       >
         <template v-for="(inlineToken, inlineIndex) in getInlineTokens(token.content, token.children)" :key="inlineIndex">
           <Label v-if="inlineToken.type === 'text'" :text="inlineToken.content" class="text-sm text-slate-700 leading-6" :color="textColorOverride" textWrap="true" />
@@ -209,12 +238,13 @@ function onLinkTap(token: MarkdownToken) {
         :code="token.content"
         :language="getLanguage(token)"
         :isIncomplete="getIsIncomplete(token)"
+        :spacingClass="codeBlockSpacingOverride"
       />
 
       <!-- Blockquotes -->
       <StackLayout
         v-else-if="token.type === 'blockquote'"
-        class="border-l-4 border-slate-300 pl-4 mb-3"
+        :class="blockquoteSpacingOverride || 'border-l-4 border-slate-300 pl-4 mb-3'"
       >
         <FlexboxLayout flexWrap="wrap" alignItems="center">
           <template v-for="(inlineToken, inlineIndex) in getInlineTokens(token.content, token.children)" :key="inlineIndex">
@@ -229,7 +259,7 @@ function onLinkTap(token: MarkdownToken) {
       <!-- Ordered lists -->
       <StackLayout
         v-else-if="token.type === 'list-ordered'"
-        class="mb-3"
+        :class="listSpacingOverride || 'mb-3'"
       >
         <GridLayout
           v-for="(item, itemIndex) in token.children"
@@ -255,7 +285,7 @@ function onLinkTap(token: MarkdownToken) {
       <!-- Unordered lists -->
       <StackLayout
         v-else-if="token.type === 'list-unordered'"
-        class="mb-3"
+        :class="listSpacingOverride || 'mb-3'"
       >
         <GridLayout
           v-for="(item, itemIndex) in token.children"
@@ -282,20 +312,21 @@ function onLinkTap(token: MarkdownToken) {
       <MdTable
         v-else-if="token.type === 'table'"
         :rows="token.children || []"
+        :spacingClass="tableSpacingOverride"
       />
 
       <!-- Images -->
       <Image
         v-else-if="token.type === 'image'"
         :src="getUrl(token)"
-        class="rounded-lg mb-3"
+        :class="'rounded-lg ' + (imageSpacingOverride || 'mb-3')"
         stretch="aspectFit"
       />
 
       <!-- Horizontal rules -->
       <StackLayout
         v-else-if="token.type === 'horizontal-rule'"
-        class="h-px bg-slate-200 my-4"
+        :class="'h-px bg-slate-200 ' + (horizontalRuleSpacingOverride || 'my-4')"
       />
 
       <!-- Math blocks -->
@@ -303,6 +334,7 @@ function onLinkTap(token: MarkdownToken) {
         v-else-if="token.type === 'math-block'"
         :content="token.content"
         :block="true"
+        :spacingClass="mathBlockSpacingOverride"
       />
 
       <!-- Mermaid diagrams -->

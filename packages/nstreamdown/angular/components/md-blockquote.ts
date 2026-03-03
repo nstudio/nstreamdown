@@ -6,12 +6,12 @@ import { Component, NO_ERRORS_SCHEMA, ChangeDetectionStrategy, computed, input }
 import { NativeScriptCommonModule } from '@nativescript/angular';
 import { MarkdownToken, parseInlineFormatting } from '@nstudio/nstreamdown';
 import { openUrl } from '@nstudio/nstreamdown';
-import type { StyleColors } from './streamdown';
+import type { StyleColors, StyleSpacing } from './streamdown';
 
 @Component({
   selector: 'MdBlockquote',
   template: `
-    <GridLayout columns="4, *" class="my-3 pl-2">
+    <GridLayout columns="4, *" [class]="styleSpacing().blockquote || 'my-3 pl-2'">
       <!-- Left border -->
       <StackLayout col="0" class="bg-slate-300 dark:bg-slate-600 rounded-full w-1"></StackLayout>
 
@@ -47,6 +47,7 @@ export class MdBlockquote {
   content = input('');
   children = input<MarkdownToken[]>([]);
   styleColors = input<StyleColors>({ text: null, link: null, codeInline: null, strikethrough: null, mathInline: null });
+  styleSpacing = input<StyleSpacing>({ paragraph: null, heading: null, list: null, blockquote: null, codeBlock: null, image: null, horizontalRule: null, table: null, mathBlock: null });
 
   displayTokens = computed(() => {
     const kids = this.children();

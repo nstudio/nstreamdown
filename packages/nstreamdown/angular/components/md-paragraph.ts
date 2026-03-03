@@ -8,12 +8,12 @@ import { NativeScriptCommonModule } from '@nativescript/angular';
 import { FormattedString, Span, Label, Color } from '@nativescript/core';
 import { MarkdownToken, parseInlineFormatting } from '@nstudio/nstreamdown';
 import { openUrl } from '@nstudio/nstreamdown';
-import type { StyleColors } from './streamdown';
+import type { StyleColors, StyleSpacing } from './streamdown';
 
 @Component({
   selector: 'MdParagraph',
   template: `
-    <StackLayout class="mb-3">
+    <StackLayout [class]="styleSpacing().paragraph || 'mb-3'">
       <Label [formattedText]="formattedString()" textWrap="true" class="text-sm text-slate-700 dark:text-slate-300 leading-[3]" [color]="styleColors().text" ignoreTouchAnimation="true" (tap)="onTap($event)"></Label>
     </StackLayout>
   `,
@@ -25,6 +25,7 @@ export class MdParagraph {
   content = input('');
   children = input<MarkdownToken[]>([]);
   styleColors = input<StyleColors>({ text: null, link: null, codeInline: null, strikethrough: null, mathInline: null });
+  styleSpacing = input<StyleSpacing>({ paragraph: null, heading: null, list: null, blockquote: null, codeBlock: null, image: null, horizontalRule: null, table: null, mathBlock: null });
 
   // Store link metadata for tap handling
   private linkUrls: Map<number, string> = new Map();

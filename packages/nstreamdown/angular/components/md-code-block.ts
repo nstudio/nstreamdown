@@ -6,11 +6,12 @@ import { Component, NO_ERRORS_SCHEMA, ChangeDetectionStrategy, signal, input, ef
 import { NativeScriptCommonModule } from '@nativescript/angular';
 import { isIOS, isAndroid } from '@nativescript/core';
 import { copyToClipboard } from '@nstudio/nstreamdown';
+import type { StyleSpacing } from './streamdown';
 
 @Component({
   selector: 'MdCodeBlock',
   template: `
-    <GridLayout class="rounded-xl border border-slate-700 bg-slate-900 mt-2 mb-3 overflow-hidden" rows="auto, auto" (loaded)="onContainerLoaded($event)">
+    <GridLayout [class]="'rounded-xl border border-slate-700 bg-slate-900 overflow-hidden ' + (styleSpacing().codeBlock || 'mt-2 mb-3')" rows="auto, auto" (loaded)="onContainerLoaded($event)">
       <!-- Header with language and copy button -->
       <GridLayout row="0" columns="*, auto" class="bg-slate-800 border-b border-slate-700 px-3 py-2">
         <Label col="0" [text]="language() || 'code'" class="text-xs text-slate-400 font-mono"></Label>
@@ -38,6 +39,7 @@ export class MdCodeBlock {
   code = input('');
   language = input('');
   isIncomplete = input(false);
+  styleSpacing = input<StyleSpacing>({ paragraph: null, heading: null, list: null, blockquote: null, codeBlock: null, image: null, horizontalRule: null, table: null, mathBlock: null });
   isIOS = __APPLE__;
 
   copied = signal(false);

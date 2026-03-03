@@ -6,6 +6,7 @@
 import { Component, NO_ERRORS_SCHEMA, ChangeDetectionStrategy, signal, input, computed } from '@angular/core';
 import { NativeScriptCommonModule } from '@nativescript/angular';
 import { copyToClipboard } from '@nstudio/nstreamdown';
+import type { StyleSpacing } from './streamdown';
 
 @Component({
   selector: 'MdMath',
@@ -17,7 +18,7 @@ import { copyToClipboard } from '@nstudio/nstreamdown';
 
     <!-- Block math -->
     @if (block()) {
-      <GridLayout class="rounded-xl border border-blue-200 dark:border-blue-800 my-3 overflow-hidden" rows="auto, auto">
+      <GridLayout [class]="'rounded-xl border border-blue-200 dark:border-blue-800 overflow-hidden ' + (styleSpacing().mathBlock || 'my-3')" rows="auto, auto">
         <!-- Controls -->
         <GridLayout row="0" columns="auto, *, auto" class="bg-blue-50 dark:bg-blue-950 border-b border-blue-200 dark:border-blue-800 px-3 py-2">
           <Label col="0" text="∑ Math" class="text-xs text-blue-600 dark:text-blue-400 font-medium"></Label>
@@ -40,6 +41,7 @@ export class MdMath {
   content = input('');
   block = input(false);
   color = input('');
+  styleSpacing = input<StyleSpacing>({ paragraph: null, heading: null, list: null, blockquote: null, codeBlock: null, image: null, horizontalRule: null, table: null, mathBlock: null });
 
   copied = signal(false);
 

@@ -7,12 +7,14 @@ interface Props {
   block?: boolean;
   /** Override inline math text color (only applies to inline rendering) */
   color?: string | null;
+  spacingClass?: string | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   content: '',
   block: false,
-  color: null
+  color: null,
+  spacingClass: null
 });
 
 const copied = ref(false);
@@ -312,7 +314,7 @@ function onCopy() {
   <!-- Block math -->
   <GridLayout
     v-else
-    class="rounded-xl border border-blue-200 my-3 overflow-hidden"
+    :class="'rounded-xl border border-blue-200 overflow-hidden ' + (spacingClass || 'my-3')"
     rows="auto, auto"
   >
     <!-- Controls -->

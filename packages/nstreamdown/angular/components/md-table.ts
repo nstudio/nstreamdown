@@ -6,11 +6,12 @@ import { Component, NO_ERRORS_SCHEMA, ChangeDetectionStrategy, signal, computed,
 import { NativeScriptCommonModule } from '@nativescript/angular';
 import { MarkdownToken } from '@nstudio/nstreamdown';
 import { copyToClipboard, openUrl } from '@nstudio/nstreamdown';
+import type { StyleSpacing } from './streamdown';
 
 @Component({
   selector: 'MdTable',
   template: `
-    <GridLayout class="rounded-xl border border-slate-200 dark:border-slate-700 my-3 overflow-hidden" rows="auto, *">
+    <GridLayout [class]="'rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden ' + (styleSpacing().table || 'my-3')" rows="auto, *">
       <!-- Controls -->
       <GridLayout row="0" columns="*, auto" class="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-3 py-2">
         <Label col="0" text="Table" class="text-xs text-slate-400 dark:text-slate-500"></Label>
@@ -77,6 +78,7 @@ import { copyToClipboard, openUrl } from '@nstudio/nstreamdown';
 })
 export class MdTable {
   rows = input<MarkdownToken[]>([]);
+  styleSpacing = input<StyleSpacing>({ paragraph: null, heading: null, list: null, blockquote: null, codeBlock: null, image: null, horizontalRule: null, table: null, mathBlock: null });
 
   copied = signal(false);
   columnsDefinition = signal<string>('*');
