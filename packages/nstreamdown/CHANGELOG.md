@@ -1,3 +1,14 @@
+## 1.0.6 (2026-03-06)
+
+### 🚀 Features
+
+- spacing class customizations ([9ea3c56](https://github.com/nstudio/nstreamdown/commit/9ea3c56))
+- more style customization abilities ([4279693](https://github.com/nstudio/nstreamdown/commit/4279693))
+
+### ❤️ Thank You
+
+- Nathan Walker
+
 ## 1.0.4 (2026-02-09)
 
 ### 🚀 Features
