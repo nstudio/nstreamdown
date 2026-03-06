@@ -70,6 +70,7 @@ onUnmounted(() => {
         src="sys://xmark.circle.fill"
         col="2"
         class="w-6 h-6 text-slate-400"
+        ignoreTouchAnimation="true"
         @tap="onClose"
       />
       <Label
@@ -77,6 +78,7 @@ onUnmounted(() => {
         col="2"
         text="✕"
         class="text-xl text-slate-400 px-2"
+        ignoreTouchAnimation="true"
         @tap="onClose"
       />
     </GridLayout>

@@ -6,15 +6,16 @@ import { Component, NO_ERRORS_SCHEMA, ChangeDetectionStrategy, signal, computed,
 import { NativeScriptCommonModule } from '@nativescript/angular';
 import { MarkdownToken } from '@nstudio/nstreamdown';
 import { copyToClipboard, openUrl } from '@nstudio/nstreamdown';
+import type { StyleSpacing } from './streamdown';
 
 @Component({
   selector: 'MdTable',
   template: `
-    <GridLayout class="rounded-xl border border-slate-200 dark:border-slate-700 my-3 overflow-hidden" rows="auto, *">
+    <GridLayout [class]="'rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden ' + (styleSpacing().table || 'my-3')" rows="auto, *">
       <!-- Controls -->
       <GridLayout row="0" columns="*, auto" class="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-3 py-2">
         <Label col="0" text="Table" class="text-xs text-slate-400 dark:text-slate-500"></Label>
-        <Label col="1" [text]="copied() ? '✓ Copied' : 'Copy'" class="text-xs text-blue-600 dark:text-blue-400 font-medium" (tap)="onCopy()"></Label>
+        <Label col="1" [text]="copied() ? '✓ Copied' : 'Copy'" class="text-xs text-blue-600 dark:text-blue-400 font-medium" ignoreTouchAnimation="true" (tap)="onCopy()"></Label>
       </GridLayout>
 
       <!-- Table content -->
@@ -55,7 +56,7 @@ import { copyToClipboard, openUrl } from '@nstudio/nstreamdown';
                           <Label [text]="token.content" class="text-xs font-bold text-slate-700 dark:text-slate-300"></Label>
                         }
                         @case ('link') {
-                          <Label [text]="token.content" class="text-xs text-blue-600 dark:text-blue-400" textDecoration="underline" (tap)="onLinkTap(token)"></Label>
+                          <Label [text]="token.content" class="text-xs text-blue-600 dark:text-blue-400" textDecoration="underline" ignoreTouchAnimation="true" (tap)="onLinkTap(token)"></Label>
                         }
                         @case ('code-inline') {
                           <Label [text]="token.content" class="text-[10] font-mono bg-slate-100 dark:bg-slate-700 text-pink-600 dark:text-pink-400 rounded px-1"></Label>
@@ -77,6 +78,7 @@ import { copyToClipboard, openUrl } from '@nstudio/nstreamdown';
 })
 export class MdTable {
   rows = input<MarkdownToken[]>([]);
+  styleSpacing = input<StyleSpacing>({ paragraph: null, heading: null, list: null, blockquote: null, codeBlock: null, image: null, horizontalRule: null, table: null, mathBlock: null });
 
   copied = signal(false);
   columnsDefinition = signal<string>('*');

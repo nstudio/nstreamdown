@@ -6,23 +6,24 @@
 import { Component, NO_ERRORS_SCHEMA, ChangeDetectionStrategy, signal, input, computed } from '@angular/core';
 import { NativeScriptCommonModule } from '@nativescript/angular';
 import { copyToClipboard } from '@nstudio/nstreamdown';
+import type { StyleSpacing } from './streamdown';
 
 @Component({
   selector: 'MdMath',
   template: `
     <!-- Inline math -->
     @if (!block()) {
-      <Label [text]="renderedMath()" class="text-base text-blue-800 dark:text-blue-300 italic"></Label>
+      <Label [text]="renderedMath()" class="text-base text-blue-800 dark:text-blue-300 italic" [color]="color() || null"></Label>
     }
 
     <!-- Block math -->
     @if (block()) {
-      <GridLayout class="rounded-xl border border-blue-200 dark:border-blue-800 my-3 overflow-hidden" rows="auto, auto">
+      <GridLayout [class]="'rounded-xl border border-blue-200 dark:border-blue-800 overflow-hidden ' + (styleSpacing().mathBlock || 'my-3')" rows="auto, auto">
         <!-- Controls -->
         <GridLayout row="0" columns="auto, *, auto" class="bg-blue-50 dark:bg-blue-950 border-b border-blue-200 dark:border-blue-800 px-3 py-2">
           <Label col="0" text="∑ Math" class="text-xs text-blue-600 dark:text-blue-400 font-medium"></Label>
           <Label col="1"></Label>
-          <Button col="2" [text]="copied() ? '✓ Copied' : 'Copy LaTeX'" class="text-xs text-blue-600 dark:text-blue-400 bg-transparent px-2 py-1 h-[25]" (tap)="onCopy()"></Button>
+          <Button col="2" [text]="copied() ? '✓ Copied' : 'Copy LaTeX'" class="text-xs text-blue-600 dark:text-blue-400 bg-transparent px-2 py-1 h-[25]" ignoreTouchAnimation="true" (tap)="onCopy()"></Button>
         </GridLayout>
 
         <!-- Math content -->
@@ -39,6 +40,8 @@ import { copyToClipboard } from '@nstudio/nstreamdown';
 export class MdMath {
   content = input('');
   block = input(false);
+  color = input('');
+  styleSpacing = input<StyleSpacing>({ paragraph: null, heading: null, list: null, blockquote: null, codeBlock: null, image: null, horizontalRule: null, table: null, mathBlock: null });
 
   copied = signal(false);
 

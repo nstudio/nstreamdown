@@ -119,9 +119,9 @@ function generateMermaidHTML(diagram: string, darkMode: boolean): string {
         <Label col="0" text="◇ Mermaid Diagram" class="text-base text-purple-400 font-medium"></Label>
         <Label col="1"></Label>
         @if (isIOS) {
-          <Image src="sys://xmark.circle.fill" col="2" class="w-6 h-6 text-slate-400" (tap)="onClose()"></Image>
+          <Image src="sys://xmark.circle.fill" col="2" class="w-6 h-6 text-slate-400" ignoreTouchAnimation="true" (tap)="onClose()"></Image>
         } @else {
-          <Label col="2" text="✕" class="text-xl text-slate-400 px-2" (tap)="onClose()"></Label>
+          <Label col="2" text="✕" class="text-xl text-slate-400 px-2" ignoreTouchAnimation="true" (tap)="onClose()"></Label>
         }
       </GridLayout>
 

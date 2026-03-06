@@ -5,10 +5,12 @@ import type { MarkdownToken } from '@nstudio/nstreamdown';
 
 interface Props {
   rows: MarkdownToken[];
+  spacingClass?: string | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  rows: () => []
+  rows: () => [],
+  spacingClass: null
 });
 
 const copied = ref(false);
@@ -99,7 +101,7 @@ function onLinkTap(token: MarkdownToken) {
 </script>
 
 <template>
-  <GridLayout class="rounded-xl border border-slate-200 my-3 overflow-hidden" rows="auto, *">
+  <GridLayout :class="'rounded-xl border border-slate-200 overflow-hidden ' + (spacingClass || 'my-3')" rows="auto, *">
     <!-- Controls -->
     <GridLayout row="0" columns="*, auto" class="bg-slate-50 border-b border-slate-200 px-3 py-2">
       <Label col="0" text="Table" class="text-xs text-slate-400" />
@@ -107,6 +109,7 @@ function onLinkTap(token: MarkdownToken) {
         col="1"
         :text="copied ? '✓ Copied' : 'Copy'"
         class="text-xs text-blue-600 font-medium"
+        ignoreTouchAnimation="true"
         @tap="onCopy"
       />
     </GridLayout>
@@ -178,6 +181,7 @@ function onLinkTap(token: MarkdownToken) {
                   :text="token.content"
                   class="text-xs text-blue-600"
                   textDecoration="underline"
+                  ignoreTouchAnimation="true"
                   @tap="onLinkTap(token)"
                 />
                 <Label

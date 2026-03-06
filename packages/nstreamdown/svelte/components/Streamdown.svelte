@@ -3,8 +3,9 @@
         <!-- Headings -->
         {#if isHeading(token)}
             <label
-                class="{getHeadingClass(getHeadingLevel(token))} text-slate-800 mb-2"
+                class="{getHeadingClass(getHeadingLevel(token))} {textColorOverride ? '' : 'text-slate-800'} {headingSpacing || 'mb-2'}"
                 textWrap={true}
+                color={textColorOverride}
             >
                 <formattedString>
                     {#each token.children || [{ type: 'text', content: token.content }] as child}
@@ -14,10 +15,10 @@
                             <span text={child.content} class="italic" />
                         {:else if child.type === 'bold-italic'}
                             <span text={child.content} class="font-bold italic" />
-                        {:else if child.type === 'code'}
-                            <span text={child.content} class="font-mono bg-slate-200 text-pink-600" />
+                        {:else if child.type === 'code-inline'}
+                            <span text={child.content} class="font-mono bg-slate-200 text-pink-600" color={codeInlineColorOverride} />
                         {:else if child.type === 'strikethrough'}
-                            <span text={child.content} class="line-through" />
+                            <span text={child.content} class="line-through" color={strikethroughColorOverride} />
                         {:else}
                             <span text={child.content} />
                         {/if}
@@ -29,8 +30,9 @@
         <!-- Paragraphs -->
         {#if token.type === 'paragraph'}
             <label
-                class="text-base text-slate-700 mb-3 leading-6"
+                class="text-base text-slate-700 {paragraphSpacing || 'mb-3'} leading-6"
                 textWrap={true}
+                color={textColorOverride}
             >
                 <formattedString>
                     {#each token.children || [{ type: 'text', content: token.content }] as child}
@@ -40,12 +42,12 @@
                             <span text={child.content} class="italic" />
                         {:else if child.type === 'bold-italic'}
                             <span text={child.content} class="font-bold italic" />
-                        {:else if child.type === 'code'}
-                            <span text={child.content} class="font-mono bg-slate-200 text-pink-600" />
+                        {:else if child.type === 'code-inline'}
+                            <span text={child.content} class="font-mono bg-slate-200 text-pink-600" color={codeInlineColorOverride} />
                         {:else if child.type === 'strikethrough'}
-                            <span text={child.content} class="line-through" />
+                            <span text={child.content} class="line-through text-slate-400" color={strikethroughColorOverride} />
                         {:else if child.type === 'link'}
-                            <span text={child.content} class="text-blue-600 underline" />
+                            <span text={child.content} class="text-blue-600 underline" color={linkColorOverride} />
                         {:else}
                             <span text={child.content} />
                         {/if}
@@ -56,7 +58,7 @@
 
         <!-- Code blocks -->
         {#if token.type === 'code-block'}
-            <stackLayout class="bg-slate-800 rounded-lg p-3 mb-3">
+            <stackLayout class="bg-slate-800 rounded-lg p-3 {codeBlockSpacing || 'mb-3'}">
                 {#if getLanguage(token)}
                     <label
                         text={getLanguage(token)}
@@ -73,22 +75,23 @@
 
         <!-- Blockquotes -->
         {#if token.type === 'blockquote'}
-            <stackLayout class="border-l-4 border-slate-300 pl-4 mb-3">
+            <stackLayout class="border-l-4 border-slate-300 pl-4 {blockquoteSpacing || 'mb-3'}">
                 <label
                     text={token.content}
                     class="text-base text-slate-600 italic"
                     textWrap={true}
+                    color={textColorOverride}
                 />
             </stackLayout>
         {/if}
 
         <!-- Ordered lists -->
         {#if token.type === 'list-ordered'}
-            <stackLayout class="mb-3">
+            <stackLayout class="{listSpacing || 'mb-3'}">
                 {#each token.children || [] as item, itemIndex}
                     <gridLayout columns="auto, *" class="mb-1">
-                        <label col="0" text="{itemIndex + 1}." class="text-slate-500 mr-2" />
-                        <label col="1" text={item.content} class="text-slate-700" textWrap={true} />
+                        <label col="0" text="{itemIndex + 1}." class="text-slate-500 mr-2" color={textColorOverride} />
+                        <label col="1" text={item.content} class="text-slate-700" textWrap={true} color={textColorOverride} />
                     </gridLayout>
                 {/each}
             </stackLayout>
@@ -96,11 +99,11 @@
 
         <!-- Unordered lists -->
         {#if token.type === 'list-unordered'}
-            <stackLayout class="mb-3">
+            <stackLayout class="{listSpacing || 'mb-3'}">
                 {#each token.children || [] as item}
                     <gridLayout columns="auto, *" class="mb-1">
-                        <label col="0" text="•" class="text-slate-500 mr-2" />
-                        <label col="1" text={item.content} class="text-slate-700" textWrap={true} />
+                        <label col="0" text="•" class="text-slate-500 mr-2" color={textColorOverride} />
+                        <label col="1" text={item.content} class="text-slate-700" textWrap={true} color={textColorOverride} />
                     </gridLayout>
                 {/each}
             </stackLayout>
@@ -108,7 +111,7 @@
 
         <!-- Tables -->
         {#if token.type === 'table'}
-            <scrollView orientation="horizontal" class="mb-3">
+            <scrollView orientation="horizontal" class="{tableSpacing || 'mb-3'}">
                 <stackLayout class="bg-white rounded-lg border border-slate-200">
                     {#each token.children || [] as row, rowIndex}
                         <gridLayout
@@ -132,21 +135,21 @@
         {#if token.type === 'image'}
             <image
                 src={getUrl(token)}
-                class="rounded-lg mb-3"
+                class="rounded-lg {imageSpacing || 'mb-3'}"
                 stretch="aspectFit"
             />
         {/if}
 
         <!-- Horizontal rules -->
         {#if token.type === 'horizontal-rule'}
-            <stackLayout class="h-px bg-slate-200 my-4" />
+            <stackLayout class="h-px bg-slate-200 {horizontalRuleSpacing || 'my-4'}" />
         {/if}
 
         <!-- Math blocks -->
         {#if token.type === 'math-block'}
             <label
                 text={token.content}
-                class="text-base text-slate-700 bg-slate-100 p-3 rounded-lg mb-3 font-mono"
+                class="text-base text-slate-700 bg-slate-100 p-3 rounded-lg {mathBlockSpacing || 'mb-3'} font-mono"
                 textWrap={true}
             />
         {/if}
@@ -181,6 +184,34 @@
         showCaret?: boolean;
         /** Custom caret character */
         caret?: string;
+        /** Override body text color for headings, paragraphs, lists, blockquotes (e.g. 'white', '#ffffff'). When not set, default theme colors apply. */
+        textColor?: string;
+        /** Override link text color (default: blue-600 / #2563eb) */
+        linkColor?: string;
+        /** Override inline code text color (default: pink-600 / #db2777) */
+        codeInlineColor?: string;
+        /** Override strikethrough text color (default: slate-400 / #94a3b8) */
+        strikethroughColor?: string;
+        /** Override inline math text color (default: blue-800 / #1e40af) */
+        mathInlineColor?: string;
+        /** Override paragraph spacing class (default: 'mb-3') */
+        paragraphClass?: string;
+        /** Override heading spacing class (default: 'mb-2') */
+        headingClass?: string;
+        /** Override list container spacing class (default: 'mb-3') */
+        listClass?: string;
+        /** Override blockquote spacing class (default: 'mb-3') */
+        blockquoteClass?: string;
+        /** Override code block spacing class (default: 'mb-3') */
+        codeBlockClass?: string;
+        /** Override image spacing class (default: 'mb-3') */
+        imageClass?: string;
+        /** Override horizontal rule spacing class (default: 'my-4') */
+        horizontalRuleClass?: string;
+        /** Override table spacing class (default: 'mb-3') */
+        tableClass?: string;
+        /** Override math block spacing class (default: 'mb-3') */
+        mathBlockClass?: string;
     }
 
     // Props
@@ -198,6 +229,24 @@
     $: mode = config?.mode || 'streaming';
     $: showCaret = config?.showCaret ?? true;
     $: caretChar = config?.caret || '▋';
+
+    // Color overrides from config
+    $: textColorOverride = config?.textColor || undefined;
+    $: linkColorOverride = config?.linkColor || undefined;
+    $: codeInlineColorOverride = config?.codeInlineColor || undefined;
+    $: strikethroughColorOverride = config?.strikethroughColor || undefined;
+    $: mathInlineColorOverride = config?.mathInlineColor || undefined;
+
+    // Spacing overrides from config
+    $: paragraphSpacing = config?.paragraphClass || undefined;
+    $: headingSpacing = config?.headingClass || undefined;
+    $: listSpacing = config?.listClass || undefined;
+    $: blockquoteSpacing = config?.blockquoteClass || undefined;
+    $: codeBlockSpacing = config?.codeBlockClass || undefined;
+    $: imageSpacing = config?.imageClass || undefined;
+    $: horizontalRuleSpacing = config?.horizontalRuleClass || undefined;
+    $: tableSpacing = config?.tableClass || undefined;
+    $: mathBlockSpacing = config?.mathBlockClass || undefined;
 
     // Parse tokens
     $: parsedResult = markdown ? parseMarkdown(markdown, mode === 'streaming') : { tokens: [], isComplete: true };

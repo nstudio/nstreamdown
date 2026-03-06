@@ -24,6 +24,7 @@ declare const android: any;
 interface CodeBlockProps {
   code: string;
   language: string;
+  spacingClass?: string;
 }
 
 function CodeBlock(props: CodeBlockProps): JSX.Element {
@@ -132,7 +133,7 @@ function CodeBlock(props: CodeBlockProps): JSX.Element {
   });
 
   return (
-    <gridlayout class="rounded-xl border border-slate-700 bg-slate-900 mt-2 mb-3 overflow-hidden" rows="auto, auto" on:loaded={onContainerLoaded}>
+    <gridlayout class={`rounded-xl border border-slate-700 bg-slate-900 overflow-hidden ${props.spacingClass || 'mt-2 mb-3'}`} rows="auto, auto" on:loaded={onContainerLoaded}>
       {/* Header with language and copy button */}
       <gridlayout row="0" columns="*, auto" class="bg-slate-800 border-b border-slate-700 px-3 py-2">
         <label col="0" text={props.language || 'code'} class="text-xs text-slate-400 font-mono" />
@@ -162,6 +163,34 @@ export interface StreamdownConfig {
   showCaret?: boolean;
   /** Custom caret character */
   caret?: string;
+  /** Override body text color for headings, paragraphs, lists, blockquotes (e.g. 'white', '#ffffff'). When not set, default theme colors apply. */
+  textColor?: string;
+  /** Override link text color (default: blue-600 / #2563eb) */
+  linkColor?: string;
+  /** Override inline code text color (default: pink-600 / #db2777) */
+  codeInlineColor?: string;
+  /** Override strikethrough text color (default: slate-400 / #94a3b8) */
+  strikethroughColor?: string;
+  /** Override inline math text color (default: blue-800 / #1e40af) */
+  mathInlineColor?: string;
+  /** Override paragraph spacing class (default: 'mb-3') */
+  paragraphClass?: string;
+  /** Override heading spacing class (default: 'mb-2') */
+  headingClass?: string;
+  /** Override list container spacing class (default: 'my-2 pl-2') */
+  listClass?: string;
+  /** Override blockquote spacing class (default: 'mb-3') */
+  blockquoteClass?: string;
+  /** Override code block spacing class (default: 'mt-2 mb-3') */
+  codeBlockClass?: string;
+  /** Override image spacing class (default: 'mb-3') */
+  imageClass?: string;
+  /** Override horizontal rule spacing class (default: 'my-4') */
+  horizontalRuleClass?: string;
+  /** Override table spacing class (default: 'my-3') */
+  tableClass?: string;
+  /** Override math block spacing class (default: 'my-3') */
+  mathBlockClass?: string;
 }
 
 export interface StreamdownProps {
@@ -183,6 +212,24 @@ export function Streamdown(props: StreamdownProps): JSX.Element {
   const mode = () => props.config?.mode || 'streaming';
   const showCaret = () => props.config?.showCaret ?? true;
   const caretChar = () => props.config?.caret || '▋';
+
+  // Color overrides from config
+  const textColor = () => props.config?.textColor || undefined;
+  const linkColor = () => props.config?.linkColor || undefined;
+  const codeInlineColor = () => props.config?.codeInlineColor || undefined;
+  const strikethroughColor = () => props.config?.strikethroughColor || undefined;
+  const mathInlineColor = () => props.config?.mathInlineColor || undefined;
+
+  // Spacing overrides from config
+  const paragraphSpacing = () => props.config?.paragraphClass || undefined;
+  const headingSpacing = () => props.config?.headingClass || undefined;
+  const listSpacing = () => props.config?.listClass || undefined;
+  const blockquoteSpacing = () => props.config?.blockquoteClass || undefined;
+  const codeBlockSpacing = () => props.config?.codeBlockClass || undefined;
+  const imageSpacing = () => props.config?.imageClass || undefined;
+  const horizontalRuleSpacing = () => props.config?.horizontalRuleClass || undefined;
+  const tableSpacing = () => props.config?.tableClass || undefined;
+  const mathBlockSpacing = () => props.config?.mathBlockClass || undefined;
 
   // Parsed result
   const parsedResult = createMemo(() => {
@@ -448,7 +495,7 @@ export function Streamdown(props: StreamdownProps): JSX.Element {
   // Render inline span based on type (with checked state support)
   const renderSpan = (child: MarkdownToken, isCheckedItem: boolean = false) => {
     const checkedClass = isCheckedItem ? 'text-slate-400 dark:text-slate-500' : '';
-    
+
     switch (child.type) {
       case 'bold':
         return <span text={child.content} class={`font-bold ${checkedClass}`} />;
@@ -457,13 +504,13 @@ export function Streamdown(props: StreamdownProps): JSX.Element {
       case 'bold-italic':
         return <span text={child.content} class={`font-bold italic ${checkedClass}`} />;
       case 'code-inline':
-        return <span text={child.content} class="font-mono bg-slate-100 dark:bg-slate-700 text-pink-600 dark:text-pink-400" />;
+        return <span text={child.content} class="font-mono bg-slate-100 dark:bg-slate-700 text-pink-600 dark:text-pink-400" color={codeInlineColor()} />;
       case 'strikethrough':
-        return <span text={child.content} class="text-slate-400 dark:text-slate-500" textDecoration="line-through" />;
+        return <span text={child.content} class="text-slate-400 dark:text-slate-500" color={strikethroughColor()} textDecoration="line-through" />;
       case 'link':
-        return <span text={child.content} class="text-blue-600 dark:text-blue-400 underline" />;
+        return <span text={child.content} class="text-blue-600 dark:text-blue-400 underline" color={linkColor()} />;
       case 'math-inline':
-        return <span text={latexToUnicode(child.content)} class="text-blue-800 dark:text-blue-300 italic" />;
+        return <span text={latexToUnicode(child.content)} class="text-blue-800 dark:text-blue-300 italic" color={mathInlineColor()} />;
       default:
         return <span text={child.content} class={checkedClass} />;
     }
@@ -477,8 +524,9 @@ export function Streamdown(props: StreamdownProps): JSX.Element {
             {/* Headings */}
             <Match when={isHeading(token)}>
               <label
-                class={`${getHeadingClass(getHeadingLevel(token))} text-slate-800 mb-2 leading-[3]`}
+                class={`${getHeadingClass(getHeadingLevel(token))} ${textColor() ? '' : 'text-slate-800'} ${headingSpacing() || 'mb-2'} leading-[3]`}
                 textWrap={true}
+                color={textColor()}
               >
                 <formattedstring>
                   <For each={getInlineChildren(token)}>
@@ -491,8 +539,9 @@ export function Streamdown(props: StreamdownProps): JSX.Element {
             {/* Paragraphs */}
             <Match when={token.type === 'paragraph'}>
               <label
-                class="text-base text-slate-700 mb-3 leading-[3]"
+                class={`text-base text-slate-700 ${paragraphSpacing() || 'mb-3'} leading-[3]`}
                 textWrap={true}
+                color={textColor()}
               >
                 <formattedstring>
                   <For each={getInlineChildren(token)}>
@@ -504,15 +553,16 @@ export function Streamdown(props: StreamdownProps): JSX.Element {
 
             {/* Code blocks */}
             <Match when={token.type === 'code-block'}>
-              <CodeBlock code={token.content} language={getLanguage(token)} />
+              <CodeBlock code={token.content} language={getLanguage(token)} spacingClass={codeBlockSpacing()} />
             </Match>
 
             {/* Blockquotes */}
             <Match when={token.type === 'blockquote'}>
-              <stacklayout class="border-l-4 border-slate-300 pl-4 mb-3">
+              <stacklayout class={`border-l-4 border-slate-300 pl-4 ${blockquoteSpacing() || 'mb-3'}`}>
                 <label
                   class="text-base text-slate-600 italic leading-[3]"
                   textWrap={true}
+                  color={textColor()}
                 >
                   <formattedstring>
                     <For each={getInlineChildren(token)}>
@@ -525,13 +575,13 @@ export function Streamdown(props: StreamdownProps): JSX.Element {
 
             {/* Ordered lists */}
             <Match when={token.type === 'list-ordered'}>
-              <stacklayout class="my-2 pl-2">
+              <stacklayout class={listSpacing() || 'my-2 pl-2'}>
                 <For each={token.children || []}>
                   {(item, itemIndex) => (
                     <gridlayout columns={isTaskItem(item) ? 'auto, auto, *' : 'auto, *'} class="py-0.5">
                       {/* Bullet or number (not shown for task items) */}
                       <Show when={!isTaskItem(item)}>
-                        <label col="0" text={getBullet(itemIndex(), item, true)} class="text-sm text-slate-500 dark:text-slate-400 pr-2 w-6 leading-[3]" />
+                        <label col="0" text={getBullet(itemIndex(), item, true)} class="text-sm text-slate-500 dark:text-slate-400 pr-2 w-6 leading-[3]" color={textColor()} />
                       </Show>
                       {/* Checkbox for task items */}
                       <Show when={isTaskItem(item)}>
@@ -543,7 +593,7 @@ export function Streamdown(props: StreamdownProps): JSX.Element {
                       <flexboxlayout col={isTaskItem(item) ? 1 : 1} flexWrap="wrap" alignItems="center">
                         <For each={getInlineChildren(item)}>
                           {(child) => (
-                            <label class={`text-sm leading-[3] ${isChecked(item) ? 'text-slate-400 dark:text-slate-500' : 'text-slate-700 dark:text-slate-300'}`} textWrap={true}>
+                            <label class={`text-sm leading-[3] ${isChecked(item) ? 'text-slate-400 dark:text-slate-500' : 'text-slate-700 dark:text-slate-300'}`} textWrap={true} color={textColor()}>
                               <formattedstring>
                                 {renderSpan(child, isChecked(item))}
                               </formattedstring>
@@ -559,13 +609,13 @@ export function Streamdown(props: StreamdownProps): JSX.Element {
 
             {/* Unordered lists */}
             <Match when={token.type === 'list-unordered'}>
-              <stacklayout class="my-2 pl-2">
+              <stacklayout class={listSpacing() || 'my-2 pl-2'}>
                 <For each={token.children || []}>
                   {(item, itemIndex) => (
                     <gridlayout columns={isTaskItem(item) ? 'auto, auto, *' : 'auto, *'} class="py-0.5">
                       {/* Bullet (not shown for task items) */}
                       <Show when={!isTaskItem(item)}>
-                        <label col="0" text={getBullet(itemIndex(), item, false)} class="text-sm text-slate-500 dark:text-slate-400 pr-2 w-6 leading-[3]" />
+                        <label col="0" text={getBullet(itemIndex(), item, false)} class="text-sm text-slate-500 dark:text-slate-400 pr-2 w-6 leading-[3]" color={textColor()} />
                       </Show>
                       {/* Checkbox for task items */}
                       <Show when={isTaskItem(item)}>
@@ -577,7 +627,7 @@ export function Streamdown(props: StreamdownProps): JSX.Element {
                       <flexboxlayout col={isTaskItem(item) ? 1 : 1} flexWrap="wrap" alignItems="center">
                         <For each={getInlineChildren(item)}>
                           {(child) => (
-                            <label class={`text-sm leading-[3] ${isChecked(item) ? 'text-slate-400 dark:text-slate-500' : 'text-slate-700 dark:text-slate-300'}`} textWrap={true}>
+                            <label class={`text-sm leading-[3] ${isChecked(item) ? 'text-slate-400 dark:text-slate-500' : 'text-slate-700 dark:text-slate-300'}`} textWrap={true} color={textColor()}>
                               <formattedstring>
                                 {renderSpan(child, isChecked(item))}
                               </formattedstring>
@@ -593,7 +643,7 @@ export function Streamdown(props: StreamdownProps): JSX.Element {
 
             {/* Tables */}
             <Match when={token.type === 'table'}>
-              <gridlayout class="rounded-xl border border-slate-200 dark:border-slate-700 my-3 overflow-hidden" rows="auto, *">
+              <gridlayout class={`rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden ${tableSpacing() || 'my-3'}`} rows="auto, *">
                 {/* Controls */}
                 <gridlayout row="0" columns="*, auto" class="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-3 py-2">
                   <label col="0" text="Table" class="text-xs text-slate-400 dark:text-slate-500" />
@@ -668,19 +718,19 @@ export function Streamdown(props: StreamdownProps): JSX.Element {
             <Match when={token.type === 'image'}>
               <image
                 src={getUrl(token)}
-                class="rounded-lg mb-3"
+                class={`rounded-lg ${imageSpacing() || 'mb-3'}`}
                 stretch="aspectFit"
               />
             </Match>
 
             {/* Horizontal rules */}
             <Match when={token.type === 'horizontal-rule'}>
-              <stacklayout class="h-px bg-slate-200 my-4" />
+              <stacklayout class={`h-px bg-slate-200 ${horizontalRuleSpacing() || 'my-4'}`} />
             </Match>
 
             {/* Math blocks */}
             <Match when={token.type === 'math-block'}>
-              <gridlayout class="rounded-xl border border-blue-200 dark:border-blue-800 my-3 overflow-hidden" rows="auto, auto">
+              <gridlayout class={`rounded-xl border border-blue-200 dark:border-blue-800 overflow-hidden ${mathBlockSpacing() || 'my-3'}`} rows="auto, auto">
                 {/* Controls */}
                 <gridlayout row="0" columns="auto, *, auto" class="bg-blue-50 dark:bg-blue-950 border-b border-blue-200 dark:border-blue-800 px-3 py-2">
                   <label col="0" text="∑ Math" class="text-xs text-blue-600 dark:text-blue-400 font-medium" />

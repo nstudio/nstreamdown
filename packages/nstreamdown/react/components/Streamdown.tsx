@@ -17,6 +17,34 @@ export interface StreamdownConfig {
   showCaret?: boolean;
   /** Custom caret character */
   caret?: string;
+  /** Override body text color for headings, paragraphs, lists, blockquotes (e.g. 'white', '#ffffff'). When not set, default theme colors apply. */
+  textColor?: string;
+  /** Override link text color (default: blue-600 / #2563eb) */
+  linkColor?: string;
+  /** Override inline code text color (default: pink-600 / #db2777) */
+  codeInlineColor?: string;
+  /** Override strikethrough text color (default: slate-400 / #94a3b8) */
+  strikethroughColor?: string;
+  /** Override inline math text color (default: blue-800 / #1e40af) */
+  mathInlineColor?: string;
+  /** Override paragraph spacing/wrapper class (default: 'mb-3') */
+  paragraphClass?: string;
+  /** Override heading spacing class (default: 'mb-2') */
+  headingClass?: string;
+  /** Override list container class (default: 'mb-3') */
+  listClass?: string;
+  /** Override blockquote spacing class (default: 'border-l-4 border-slate-300 pl-4 mb-3') */
+  blockquoteClass?: string;
+  /** Override code block spacing class (default: 'mb-3') */
+  codeBlockClass?: string;
+  /** Override image container class (default: 'mb-3') */
+  imageClass?: string;
+  /** Override horizontal rule spacing class (default: 'my-4') */
+  horizontalRuleClass?: string;
+  /** Override table spacing class (default: 'mb-3') */
+  tableClass?: string;
+  /** Override math block spacing class (default: 'mb-3') */
+  mathBlockClass?: string;
 }
 
 export interface StreamdownProps {
@@ -44,6 +72,24 @@ export function Streamdown({
   const mode = config?.mode || 'streaming';
   const showCaret = config?.showCaret ?? true;
   const caretChar = config?.caret || '▋';
+
+  // Color overrides from config
+  const textColor = config?.textColor || undefined;
+  const linkColor = config?.linkColor || undefined;
+  const codeInlineColor = config?.codeInlineColor || undefined;
+  const strikethroughColor = config?.strikethroughColor || undefined;
+  const mathInlineColor = config?.mathInlineColor || undefined;
+
+  // Spacing overrides from config
+  const paragraphSpacing = config?.paragraphClass || undefined;
+  const headingSpacing = config?.headingClass || undefined;
+  const listSpacing = config?.listClass || undefined;
+  const blockquoteSpacing = config?.blockquoteClass || undefined;
+  const codeBlockSpacing = config?.codeBlockClass || undefined;
+  const imageSpacing = config?.imageClass || undefined;
+  const horizontalRuleSpacing = config?.horizontalRuleClass || undefined;
+  const tableSpacing = config?.tableClass || undefined;
+  const mathBlockSpacing = config?.mathBlockClass || undefined;
 
   // Parse tokens
   const parsedResult = useMemo(() => {
@@ -125,8 +171,9 @@ export function Streamdown({
         <label
           key={key}
           text={token.content}
-          className={`${getHeadingClass(getHeadingLevel(token))} text-slate-800 mb-2`}
+          className={`${getHeadingClass(getHeadingLevel(token))} ${textColor ? '' : 'text-slate-800'} ${headingSpacing || 'mb-2'}`}
           textWrap={true}
+          color={textColor}
         />
       );
     }
@@ -137,8 +184,9 @@ export function Streamdown({
         <label
           key={key}
           text={token.content}
-          className="text-base text-slate-700 mb-3 leading-6"
+          className={`text-base text-slate-700 ${paragraphSpacing || 'mb-3'} leading-6`}
           textWrap={true}
+          color={textColor}
         />
       );
     }
@@ -146,7 +194,7 @@ export function Streamdown({
     // Code blocks
     if (token.type === 'code-block') {
       return (
-        <stackLayout key={key} className="bg-slate-800 rounded-lg p-3 mb-3">
+        <stackLayout key={key} className={`bg-slate-800 rounded-lg p-3 ${codeBlockSpacing || 'mb-3'}`}>
           {getLanguage(token) && (
             <label
               text={getLanguage(token)}
@@ -165,11 +213,12 @@ export function Streamdown({
     // Blockquotes
     if (token.type === 'blockquote') {
       return (
-        <stackLayout key={key} className="border-l-4 border-slate-300 pl-4 mb-3">
+        <stackLayout key={key} className={blockquoteSpacing || 'border-l-4 border-slate-300 pl-4 mb-3'}>
           <label
             text={token.content}
             className="text-base text-slate-600 italic"
             textWrap={true}
+            color={textColor}
           />
         </stackLayout>
       );
@@ -178,11 +227,11 @@ export function Streamdown({
     // Ordered lists
     if (token.type === 'list-ordered') {
       return (
-        <stackLayout key={key} className="mb-3">
+        <stackLayout key={key} className={listSpacing || 'mb-3'}>
           {(token.children || []).map((item, itemIndex) => (
             <gridLayout key={itemIndex} columns="auto, *" className="mb-1">
-              <label col={0} text={`${itemIndex + 1}.`} className="text-slate-500 mr-2" />
-              <label col={1} text={item.content} className="text-slate-700" textWrap={true} />
+              <label col={0} text={`${itemIndex + 1}.`} className="text-slate-500 mr-2" color={textColor} />
+              <label col={1} text={item.content} className="text-slate-700" textWrap={true} color={textColor} />
             </gridLayout>
           ))}
         </stackLayout>
@@ -192,11 +241,11 @@ export function Streamdown({
     // Unordered lists
     if (token.type === 'list-unordered') {
       return (
-        <stackLayout key={key} className="mb-3">
+        <stackLayout key={key} className={listSpacing || 'mb-3'}>
           {(token.children || []).map((item, itemIndex) => (
             <gridLayout key={itemIndex} columns="auto, *" className="mb-1">
-              <label col={0} text="•" className="text-slate-500 mr-2" />
-              <label col={1} text={item.content} className="text-slate-700" textWrap={true} />
+              <label col={0} text="•" className="text-slate-500 mr-2" color={textColor} />
+              <label col={1} text={item.content} className="text-slate-700" textWrap={true} color={textColor} />
             </gridLayout>
           ))}
         </stackLayout>
@@ -206,7 +255,7 @@ export function Streamdown({
     // Tables
     if (token.type === 'table') {
       return (
-        <scrollView key={key} orientation="horizontal" className="mb-3">
+        <scrollView key={key} orientation="horizontal" className={tableSpacing || 'mb-3'}>
           <stackLayout className="bg-white rounded-lg border border-slate-200">
             {(token.children || []).map((row, rowIndex) => (
               <gridLayout
@@ -235,7 +284,7 @@ export function Streamdown({
         <image
           key={key}
           src={getUrl(token)}
-          className="rounded-lg mb-3"
+          className={`rounded-lg ${imageSpacing || 'mb-3'}`}
           stretch="aspectFit"
         />
       );
@@ -243,7 +292,7 @@ export function Streamdown({
 
     // Horizontal rules
     if (token.type === 'horizontal-rule') {
-      return <stackLayout key={key} className="h-px bg-slate-200 my-4" />;
+      return <stackLayout key={key} className={`h-px bg-slate-200 ${horizontalRuleSpacing || 'my-4'}`} />;
     }
 
     // Math blocks
@@ -252,7 +301,7 @@ export function Streamdown({
         <label
           key={key}
           text={token.content}
-          className="text-base text-slate-700 bg-slate-100 p-3 rounded-lg mb-3 font-mono"
+          className={`text-base text-slate-700 bg-slate-100 p-3 rounded-lg ${mathBlockSpacing || 'mb-3'} font-mono`}
           textWrap={true}
         />
       );

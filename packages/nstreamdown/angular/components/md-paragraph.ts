@@ -8,12 +8,13 @@ import { NativeScriptCommonModule } from '@nativescript/angular';
 import { FormattedString, Span, Label, Color } from '@nativescript/core';
 import { MarkdownToken, parseInlineFormatting } from '@nstudio/nstreamdown';
 import { openUrl } from '@nstudio/nstreamdown';
+import type { StyleColors, StyleSpacing } from './streamdown';
 
 @Component({
   selector: 'MdParagraph',
   template: `
-    <StackLayout class="mb-3">
-      <Label [formattedText]="formattedString()" textWrap="true" class="text-sm text-slate-700 dark:text-slate-300 leading-[3]" (tap)="onTap($event)"></Label>
+    <StackLayout [class]="styleSpacing().paragraph || 'mb-3'">
+      <Label [formattedText]="formattedString()" textWrap="true" class="text-sm text-slate-700 dark:text-slate-300 leading-[3]" [color]="styleColors().text" ignoreTouchAnimation="true" (tap)="onTap($event)"></Label>
     </StackLayout>
   `,
   imports: [NativeScriptCommonModule],
@@ -23,6 +24,8 @@ import { openUrl } from '@nstudio/nstreamdown';
 export class MdParagraph {
   content = input('');
   children = input<MarkdownToken[]>([]);
+  styleColors = input<StyleColors>({ text: null, link: null, codeInline: null, strikethrough: null, mathInline: null });
+  styleSpacing = input<StyleSpacing>({ paragraph: null, heading: null, list: null, blockquote: null, codeBlock: null, image: null, horizontalRule: null, table: null, mathBlock: null });
 
   // Store link metadata for tap handling
   private linkUrls: Map<number, string> = new Map();
@@ -40,6 +43,7 @@ export class MdParagraph {
 
   formattedString = computed(() => {
     const tokens = this.displayTokens();
+    const colors = this.styleColors();
     const fs = new FormattedString();
     this.linkUrls.clear();
 
@@ -60,15 +64,15 @@ export class MdParagraph {
           break;
         case 'strikethrough':
           span.textDecoration = 'line-through';
-          span.color = new Color('#94a3b8'); // slate-400
+          span.color = new Color(colors.strikethrough || '#94a3b8'); // slate-400
           break;
         case 'code-inline':
           span.fontFamily = 'monospace';
           span.backgroundColor = new Color('#f1f5f9'); // slate-100
-          span.color = new Color('#db2777'); // pink-600
+          span.color = new Color(colors.codeInline || '#db2777'); // pink-600
           break;
         case 'link':
-          span.color = new Color('#2563eb'); // blue-600
+          span.color = new Color(colors.link || '#2563eb'); // blue-600
           span.textDecoration = 'underline';
           // Store the URL for this span index
           const url = token.metadata?.['url'] as string;
@@ -78,7 +82,7 @@ export class MdParagraph {
           break;
         case 'math-inline':
           span.fontFamily = 'monospace';
-          span.color = new Color('#7c3aed'); // purple-600
+          span.color = new Color(colors.mathInline || '#7c3aed'); // purple-600
           break;
         default:
           // text - use default styling

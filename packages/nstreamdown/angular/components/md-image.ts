@@ -5,11 +5,12 @@
 import { Component, NO_ERRORS_SCHEMA, ChangeDetectionStrategy, signal, input, effect, ViewChild, ElementRef } from '@angular/core';
 import { NativeScriptCommonModule } from '@nativescript/angular';
 import { ImageSource, Image } from '@nativescript/core';
+import type { StyleSpacing } from './streamdown';
 
 @Component({
   selector: 'MdImage',
   template: `
-    <StackLayout class="my-3">
+    <StackLayout [class]="styleSpacing().image || 'my-3'">
       <GridLayout height="160" class="rounded-lg">
         <!-- Loading state -->
         @if (loading()) {
@@ -46,6 +47,7 @@ export class MdImage {
   src = input('');
   alt = input('');
   stretch = input<'aspectFit' | 'aspectFill' | 'fill' | 'none'>('aspectFit');
+  styleSpacing = input<StyleSpacing>({ paragraph: null, heading: null, list: null, blockquote: null, codeBlock: null, image: null, horizontalRule: null, table: null, mathBlock: null });
 
   loading = signal(true);
   error = signal(false);
