@@ -5,10 +5,10 @@
  */
 import { Component, NO_ERRORS_SCHEMA, ChangeDetectionStrategy, computed, input, signal, effect } from '@angular/core';
 import { NativeScriptCommonModule } from '@nativescript/angular';
-import { FormattedString, Span, Label, Color } from '@nativescript/core';
 import { MarkdownToken, parseInlineFormatting } from '@nstudio/nstreamdown';
 import { openUrl } from '@nstudio/nstreamdown';
 import type { StyleColors, StyleSpacing } from './streamdown';
+import { buildFormattedString } from './formatted-string';
 
 @Component({
   selector: 'MdParagraph',
@@ -42,57 +42,7 @@ export class MdParagraph {
   });
 
   formattedString = computed(() => {
-    const tokens = this.displayTokens();
-    const colors = this.styleColors();
-    const fs = new FormattedString();
-    this.linkUrls.clear();
-
-    tokens.forEach((token, index) => {
-      const span = new Span();
-      span.text = token.content;
-
-      switch (token.type) {
-        case 'bold':
-          span.fontWeight = 'bold';
-          break;
-        case 'italic':
-          span.fontStyle = 'italic';
-          break;
-        case 'bold-italic':
-          span.fontWeight = 'bold';
-          span.fontStyle = 'italic';
-          break;
-        case 'strikethrough':
-          span.textDecoration = 'line-through';
-          span.color = new Color(colors.strikethrough || '#94a3b8'); // slate-400
-          break;
-        case 'code-inline':
-          span.fontFamily = 'monospace';
-          span.backgroundColor = new Color('#f1f5f9'); // slate-100
-          span.color = new Color(colors.codeInline || '#db2777'); // pink-600
-          break;
-        case 'link':
-          span.color = new Color(colors.link || '#2563eb'); // blue-600
-          span.textDecoration = 'underline';
-          // Store the URL for this span index
-          const url = token.metadata?.['url'] as string;
-          if (url && url !== 'streamdown:incomplete-link') {
-            this.linkUrls.set(index, url);
-          }
-          break;
-        case 'math-inline':
-          span.fontFamily = 'monospace';
-          span.color = new Color(colors.mathInline || '#7c3aed'); // purple-600
-          break;
-        default:
-          // text - use default styling
-          break;
-      }
-
-      fs.spans.push(span);
-    });
-
-    return fs;
+    return buildFormattedString(this.displayTokens(), this.styleColors(), this.linkUrls);
   });
 
   onTap(args: any) {
