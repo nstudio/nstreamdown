@@ -1,3 +1,13 @@
+## 1.0.7 (2026-08-13)
+
+### 🩹 Fixes
+
+- list styling with formatted strings ([e527e91](https://github.com/nstudio/nstreamdown/commit/e527e91))
+
+### ❤️ Thank You
+
+- Nathan Walker
+
 ## 1.0.6 (2026-03-06)
 
 ### 🚀 Features
