@@ -5,20 +5,28 @@
  * otherwise wrap onto its own line.
  */
 import { FormattedString, Span, Color } from '@nativescript/core';
-import { MarkdownToken } from '@nstudio/nstreamdown';
+import { MarkdownToken, openUrl } from '@nstudio/nstreamdown';
 import type { StyleColors } from './streamdown';
 
-/**
- * Builds a FormattedString from inline tokens. When `linkUrls` is provided it
- * is cleared and repopulated with span index → url for tap handling.
- */
-export function buildFormattedString(tokens: MarkdownToken[], colors: StyleColors, linkUrls?: Map<number, string>): FormattedString {
-  const fs = new FormattedString();
-  linkUrls?.clear();
+export interface FormattedStringOptions {
+  /** Italicise every span (a blockquote); the markdown italic token still applies on top. */
+  italic?: boolean;
+}
 
-  tokens.forEach((token, index) => {
+/**
+ * Builds a FormattedString from inline tokens. Link spans open their own URL:
+ * `linkTap` is the event that makes a Span tappable, so a block may hold any
+ * number of links and the Label itself needs no tap handler.
+ */
+export function buildFormattedString(tokens: MarkdownToken[], colors: StyleColors, options: FormattedStringOptions = {}): FormattedString {
+  const fs = new FormattedString();
+
+  for (const token of tokens) {
     const span = new Span();
     span.text = token.content;
+    if (options.italic) {
+      span.fontStyle = 'italic';
+    }
 
     switch (token.type) {
       case 'bold':
@@ -37,17 +45,19 @@ export function buildFormattedString(tokens: MarkdownToken[], colors: StyleColor
         break;
       case 'code-inline':
         span.fontFamily = 'monospace';
-        span.backgroundColor = new Color('#f1f5f9'); // slate-100
+        // a translucent slate reads as a chip on light and dark surfaces alike
+        span.backgroundColor = new Color('rgba(148, 163, 184, 0.2)');
         span.color = new Color(colors.codeInline || '#db2777'); // pink-600
         break;
-      case 'link':
+      case 'link': {
         span.color = new Color(colors.link || '#2563eb'); // blue-600
         span.textDecoration = 'underline';
         const url = token.metadata?.['url'] as string;
         if (url && url !== 'streamdown:incomplete-link') {
-          linkUrls?.set(index, url);
+          span.on(Span.linkTapEvent, () => openUrl(url));
         }
         break;
+      }
       case 'math-inline':
         span.fontFamily = 'monospace';
         span.color = new Color(colors.mathInline || '#7c3aed'); // purple-600
@@ -58,7 +68,7 @@ export function buildFormattedString(tokens: MarkdownToken[], colors: StyleColor
     }
 
     fs.spans.push(span);
-  });
+  }
 
   return fs;
 }

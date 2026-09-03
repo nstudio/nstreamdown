@@ -316,10 +316,12 @@ export function Streamdown(props: StreamdownProps): JSX.Element {
   };
 
   // Get bullet for list item
-  const getBullet = (index: number, item: MarkdownToken, ordered: boolean): string => {
+  const getBullet = (index: number, item: MarkdownToken, ordered: boolean, items: MarkdownToken[]): string => {
     if (ordered) {
-      const num = item.metadata?.['number'] ?? index + 1;
-      return `${num}.`;
+      // CommonMark: the first item's number starts the list and the rest count
+      // up from it, whatever they are written as ("1." on every line is common).
+      const start = Number(items[0]?.metadata?.['number'] ?? item.metadata?.['number'] ?? 1);
+      return `${start + index}.`;
     }
     return '•';
   };
@@ -581,7 +583,7 @@ export function Streamdown(props: StreamdownProps): JSX.Element {
                     <gridlayout columns={isTaskItem(item) ? 'auto, auto, *' : 'auto, *'} class="py-0.5">
                       {/* Bullet or number (not shown for task items) */}
                       <Show when={!isTaskItem(item)}>
-                        <label col="0" text={getBullet(itemIndex(), item, true)} class="text-sm text-slate-500 dark:text-slate-400 pr-2 w-6 leading-[3]" color={textColor()} />
+                        <label col="0" text={getBullet(itemIndex(), item, true, token.children || [])} class="text-sm text-slate-500 dark:text-slate-400 pr-2 w-6 leading-[3]" color={textColor()} />
                       </Show>
                       {/* Checkbox for task items */}
                       <Show when={isTaskItem(item)}>
@@ -615,7 +617,7 @@ export function Streamdown(props: StreamdownProps): JSX.Element {
                     <gridlayout columns={isTaskItem(item) ? 'auto, auto, *' : 'auto, *'} class="py-0.5">
                       {/* Bullet (not shown for task items) */}
                       <Show when={!isTaskItem(item)}>
-                        <label col="0" text={getBullet(itemIndex(), item, false)} class="text-sm text-slate-500 dark:text-slate-400 pr-2 w-6 leading-[3]" color={textColor()} />
+                        <label col="0" text={getBullet(itemIndex(), item, false, token.children || [])} class="text-sm text-slate-500 dark:text-slate-400 pr-2 w-6 leading-[3]" color={textColor()} />
                       </Show>
                       {/* Checkbox for task items */}
                       <Show when={isTaskItem(item)}>

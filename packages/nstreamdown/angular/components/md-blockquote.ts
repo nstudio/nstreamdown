@@ -5,7 +5,7 @@
 import { Component, NO_ERRORS_SCHEMA, ChangeDetectionStrategy, computed, input } from '@angular/core';
 import { NativeScriptCommonModule } from '@nativescript/angular';
 import { MarkdownToken, parseInlineFormatting } from '@nstudio/nstreamdown';
-import { openUrl } from '@nstudio/nstreamdown';
+import { buildFormattedString } from './formatted-string';
 import type { StyleColors, StyleSpacing } from './streamdown';
 
 @Component({
@@ -15,28 +15,9 @@ import type { StyleColors, StyleSpacing } from './streamdown';
       <!-- Left border -->
       <StackLayout col="0" class="bg-slate-300 dark:bg-slate-600 rounded-full w-1"></StackLayout>
 
-      <!-- Content with inline formatting -->
-      <FlexboxLayout col="1" class="pl-3" flexWrap="wrap" alignItems="center">
-        @for (token of displayTokens(); track $index) {
-          @switch (token.type) {
-            @case ('text') {
-              <Label [text]="token.content" class="text-sm text-slate-500 dark:text-slate-400 italic leading-[3]" [color]="styleColors().text" textWrap="true"></Label>
-            }
-            @case ('bold') {
-              <Label [text]="token.content" class="text-sm text-slate-600 dark:text-slate-300 font-bold italic leading-[3]" [color]="styleColors().text" textWrap="true"></Label>
-            }
-            @case ('italic') {
-              <Label [text]="token.content" class="text-sm text-slate-500 dark:text-slate-400 italic leading-[3]" [color]="styleColors().text" textWrap="true"></Label>
-            }
-            @case ('code-inline') {
-              <Label [text]="token.content" class="text-xs font-mono bg-slate-100 dark:bg-slate-700 text-pink-600 dark:text-pink-400 rounded px-1" [color]="styleColors().codeInline" textWrap="true"></Label>
-            }
-            @case ('link') {
-              <Label [text]="token.content" class="text-sm text-blue-600 dark:text-blue-400 italic leading-[3]" [color]="styleColors().link" textDecoration="underline" ignoreTouchAnimation="true" (tap)="onLinkTap(token)" textWrap="true"></Label>
-            }
-          }
-        }
-      </FlexboxLayout>
+      <!-- Single Label so inline runs (links, code, bold) flow and wrap as
+           continuous text; separate Labels per run cannot flow mid-text. -->
+      <Label col="1" [formattedText]="quoteFormatted()" textWrap="true" class="pl-3 text-sm text-slate-500 dark:text-slate-400 leading-[3]" [color]="styleColors().text" ignoreTouchAnimation="true"></Label>
     </GridLayout>
   `,
   imports: [NativeScriptCommonModule],
@@ -60,10 +41,5 @@ export class MdBlockquote {
     return [];
   });
 
-  onLinkTap(token: MarkdownToken) {
-    const url = token.metadata?.['url'] as string;
-    if (url && url !== 'streamdown:incomplete-link') {
-      openUrl(url);
-    }
-  }
+  quoteFormatted = computed(() => buildFormattedString(this.displayTokens(), this.styleColors(), { italic: true }));
 }

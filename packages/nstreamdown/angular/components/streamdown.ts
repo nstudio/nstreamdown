@@ -125,7 +125,7 @@ export interface StyleSpacing {
 
         <!-- Tables -->
         @if (token.type === 'table') {
-          <MdTable [rows]="token.children || []" [styleSpacing]="styleSpacing()"></MdTable>
+          <MdTable [rows]="token.children || []" [styleColors]="styleColors()" [styleSpacing]="styleSpacing()"></MdTable>
         }
 
         <!-- Images -->
