@@ -1,3 +1,13 @@
+## 1.0.8 (2026-09-03)
+
+### 🩹 Fixes
+
+- **angular:** per-span link taps, heading links, flowing blockquotes, CommonMark list numbering ([#5](https://github.com/nstudio/nstreamdown/pull/5))
+
+### ❤️ Thank You
+
+- Nathan Walker
+
 ## 1.0.7 (2026-08-13)
 
 ### 🩹 Fixes
