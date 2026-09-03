@@ -4,7 +4,7 @@
  */
 import { Component, NO_ERRORS_SCHEMA, ChangeDetectionStrategy, computed, input } from '@angular/core';
 import { NativeScriptCommonModule } from '@nativescript/angular';
-import { MarkdownToken, parseInlineFormatting } from '@nstudio/nstreamdown';
+import { MarkdownToken, parseInlineFormatting, openUrl } from '@nstudio/nstreamdown';
 import type { StyleColors, StyleSpacing } from './streamdown';
 
 @Component({
@@ -24,6 +24,12 @@ import type { StyleColors, StyleSpacing } from './streamdown';
           }
           @case ('code-inline') {
             <Label [text]="token.content" class="font-mono font-bold bg-gray-200 dark:bg-slate-700 text-pink-600 dark:text-pink-400 rounded px-1" [color]="styleColors().codeInline" textWrap="true"></Label>
+          }
+          @case ('link') {
+            <Label [text]="token.content" class="font-bold" [color]="styleColors().link || '#2563eb'" textDecoration="underline" ignoreTouchAnimation="true" (tap)="onLinkTap(token)" textWrap="true"></Label>
+          }
+          @default {
+            <Label [text]="token.content" class="font-bold" textWrap="true"></Label>
           }
         }
       }
@@ -65,4 +71,11 @@ export class MdHeading {
     };
     return `${baseClass} ${sizeClasses[this.level()]}`;
   });
+
+  onLinkTap(token: MarkdownToken) {
+    const url = token.metadata?.['url'] as string;
+    if (url && url !== 'streamdown:incomplete-link') {
+      openUrl(url);
+    }
+  }
 }

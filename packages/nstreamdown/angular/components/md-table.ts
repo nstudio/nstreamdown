@@ -6,7 +6,7 @@ import { Component, NO_ERRORS_SCHEMA, ChangeDetectionStrategy, signal, computed,
 import { NativeScriptCommonModule } from '@nativescript/angular';
 import { MarkdownToken } from '@nstudio/nstreamdown';
 import { copyToClipboard, openUrl } from '@nstudio/nstreamdown';
-import type { StyleSpacing } from './streamdown';
+import type { StyleSpacing, StyleColors } from './streamdown';
 
 @Component({
   selector: 'MdTable',
@@ -56,7 +56,7 @@ import type { StyleSpacing } from './streamdown';
                           <Label [text]="token.content" class="text-xs font-bold text-slate-700 dark:text-slate-300"></Label>
                         }
                         @case ('link') {
-                          <Label [text]="token.content" class="text-xs text-blue-600 dark:text-blue-400" textDecoration="underline" ignoreTouchAnimation="true" (tap)="onLinkTap(token)"></Label>
+                          <Label [text]="token.content" class="text-xs" [color]="styleColors().link || '#2563eb'" textDecoration="underline" ignoreTouchAnimation="true" (tap)="onLinkTap(token)"></Label>
                         }
                         @case ('code-inline') {
                           <Label [text]="token.content" class="text-[10] font-mono bg-slate-100 dark:bg-slate-700 text-pink-600 dark:text-pink-400 rounded px-1"></Label>
@@ -78,6 +78,7 @@ import type { StyleSpacing } from './streamdown';
 })
 export class MdTable {
   rows = input<MarkdownToken[]>([]);
+  styleColors = input<StyleColors>({ text: null, link: null, codeInline: null, strikethrough: null, mathInline: null });
   styleSpacing = input<StyleSpacing>({ paragraph: null, heading: null, list: null, blockquote: null, codeBlock: null, image: null, horizontalRule: null, table: null, mathBlock: null });
 
   copied = signal(false);
